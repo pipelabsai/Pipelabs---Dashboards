@@ -235,7 +235,7 @@ const I18N = {
     emptyNotes:"A primeira leitura mensal chega no fim deste mês.",
     promised:" · o que prometemos",
     copied:"Copiado: ", saved:"Status atualizado", failed:"Não foi possível atualizar",
-    noEmail:"sem e-mail", noPhone:"sem telefone", openLi:"Abrir perfil no LinkedIn",
+    noEmail:"sem e-mail", noPhone:"sem telefone", openLi:"Abrir perfil no LinkedIn", noLinkedin:"sem LinkedIn",
     loading:["Carregando…","Buscando os dados do seu relatório."],
     noToken:["Link incompleto","Este endereço está sem o código de acesso. Peça o link completo ao seu contato na PipeLabs."],
     dead:["Este link não está ativo","Fale com o seu ponto de contato na PipeLabs."],
@@ -269,7 +269,7 @@ const I18N = {
     emptyNotes:"The first monthly read arrives at the end of this month.",
     promised:" · what we promised",
     copied:"Copied: ", saved:"Status updated", failed:"Could not update",
-    noEmail:"no email", noPhone:"no phone", openLi:"Open LinkedIn profile",
+    noEmail:"no email", noPhone:"no phone", openLi:"Open LinkedIn profile", noLinkedin:"no LinkedIn",
     loading:["Loading…","Fetching your report."],
     noToken:["Incomplete link","This address is missing its access code. Ask your PipeLabs contact for the full link."],
     dead:["This link is not active","Talk to your point of contact at PipeLabs."],
@@ -303,7 +303,7 @@ const I18N = {
     emptyNotes:"La primera lectura mensual llega a fin de mes.",
     promised:" · lo que prometimos",
     copied:"Copiado: ", saved:"Estado actualizado", failed:"No se pudo actualizar",
-    noEmail:"sin correo", noPhone:"sin teléfono", openLi:"Abrir perfil de LinkedIn",
+    noEmail:"sin correo", noPhone:"sin teléfono", openLi:"Abrir perfil de LinkedIn", noLinkedin:"sin LinkedIn",
     loading:["Cargando…","Buscando los datos de su informe."],
     noToken:["Enlace incompleto","A esta dirección le falta el código de acceso. Pida el enlace completo a su contacto en PipeLabs."],
     dead:["Este enlace no está activo","Hable con su punto de contacto en PipeLabs."],
@@ -387,6 +387,15 @@ const MOVES = {
 };
 const STCLASS = { interested:"stOk", meeting_booked:"stCal", no_show:"stNo" };
 
+// 96% of contacts store linkedin_url without a scheme ("linkedin.com/in/x"). A bare href like
+// that is a RELATIVE path, so the browser navigated inside this site and hit a 404 instead of
+// opening LinkedIn. Normalise on display; the stored value is left alone.
+function liHref(u){
+  if (!u) return "";
+  const s = String(u).trim();
+  return /^https?:\/\//i.test(s) ? s : "https://" + s.replace(/^\/+/, "");
+}
+
 function leads(){
   const rows = (D.leads || []).filter(l => l.event_at && inRange(String(l.event_at).slice(0,10)));
   if (!rows.length){ $("leads").innerHTML = '<p class="empty">' + L.emptyLeads + '</p>'; return; }
@@ -399,6 +408,7 @@ function leads(){
         '<option value="' + st + '" selected>' + L.st[st] + '</option>' +
         moves.map(m => '<option value="' + m + '">' + L.st[m] + '</option>').join("") + '</select>'
       : '<span class="tag ' + (STCLASS[st] || "") + '">' + (L.st[st] || st) + '</span>';
+    const li = liHref(l.linkedin_url);
     const firmo = [l.industry, l.headcount ? BR(l.headcount) + " " + L.employees : null].filter(Boolean).join(" · ");
     const who = [l.title, l.company_name].filter(Boolean).join(" · ");
     return '<article class="lead"><div class="ltop"><div>' +
@@ -406,9 +416,13 @@ function leads(){
       '<div class="lmeta">' + esc(who) + '</div>' +
       (firmo ? '<div class="lfirmo">' + esc(firmo) + '</div>' : '') +
       '</div><div class="links">' +
-      '<button class="ln ' + (l.email?"":"off") + '" data-copy="' + esc(l.email) + '" title="' + esc(l.email || L.noEmail) + '">' + IC.mail + '</button>' +
-      '<button class="ln ' + (l.phone?"":"off") + '" data-copy="' + esc(l.phone) + '" title="' + esc(l.phone || L.noPhone) + '">' + IC.phone + '</button>' +
-      '<a class="ln ' + (l.linkedin_url?"":"off") + '" href="' + esc(l.linkedin_url || "#") + '" target="_blank" rel="noopener" title="' + L.openLi + '">' + IC.li + '</a>' +
+      '<button type="button" class="ln ' + (l.email?"":"off") + '"' + (l.email?"":" disabled") +
+        ' data-copy="' + esc(l.email) + '" title="' + esc(l.email || L.noEmail) + '">' + IC.mail + '</button>' +
+      '<button type="button" class="ln ' + (l.phone?"":"off") + '"' + (l.phone?"":" disabled") +
+        ' data-copy="' + esc(l.phone) + '" title="' + esc(l.phone || L.noPhone) + '">' + IC.phone + '</button>' +
+      (li
+        ? '<a class="ln" href="' + esc(li) + '" target="_blank" rel="noopener noreferrer" title="' + L.openLi + '">' + IC.li + '</a>'
+        : '<span class="ln off" title="' + L.noLinkedin + '">' + IC.li + '</span>') +
       '</div></div>' +
       (l.last_reply_text ? '<p class="quote">&ldquo;' + esc(l.last_reply_text) + '&rdquo;</p>' : '') +
       '<div class="lfoot">' + control +
