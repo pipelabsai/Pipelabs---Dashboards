@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<!-- The access token rides in the query string. Without this, an old browser can put the whole
+     URL in the Referer header of the cross-origin font request below. -->
+<meta name="referrer" content="no-referrer">
 <title>PipeLabs · Report</title>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
 <!--
@@ -133,6 +136,26 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
  color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;
  transition:opacity .18s,transform .18s;z-index:50;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Internal agency bar. Only ever shown behind the agency token + password, and it stays
+   pinned while a client's own report is displayed below it, so nobody mistakes the internal
+   view for the client's. */
+#abar{display:none;position:sticky;top:0;z-index:40;background:#00003F;color:#fff;
+ border-bottom:1px solid rgba(255,255,255,.14)}
+.abarIn{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+@media(min-width:900px){.abarIn{padding:12px 40px}}
+#abar .mark{width:26px;height:26px;border-radius:7px;font-size:12px}
+#abar .wordmark{font-size:15px}
+.apk{display:flex;align-items:center;gap:9px;margin-left:auto}
+.apk>span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6)}
+#apick{font:700 13px 'Satoshi',sans-serif;color:#00003F;background:#fff;border:0;border-radius:9px;
+ padding:8px 12px;cursor:pointer;max-width:58vw}
+#apick:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.aro{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.24);
+ border-radius:999px;padding:4px 10px;white-space:nowrap}
+.crow{cursor:pointer}
+.crow:hover td{background:var(--alt)}
+.crow:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+.capnote{font-size:12.5px;color:var(--muted);margin:14px 0 0}
 #gate{display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
 #gate h1{color:var(--heading);font-size:20px;margin:0 0 8px}
 #app{display:none}
@@ -140,6 +163,13 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 </style>
 </head>
 <body>
+
+<div id="abar"><div class="abarIn">
+ <div class="lockup"><div class="mark">PL</div><div class="wordmark">PipeLabs</div></div>
+ <label class="apk"><span>Cliente</span>
+  <select id="apick" aria-label="Escolher cliente"></select></label>
+ <span class="aro">Somente leitura</span>
+</div></div>
 
 <div id="gate"><div>
   <h1 id="gate-t">…</h1><p id="gate-p"></p>
@@ -224,7 +254,9 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 <div class="wrap"><div class="grid">
  <section class="card">
   <h2>Por cliente</h2>
-  <p class="sub">Todos os clientes que passam pelo Supabase. Ordenado por reuniões.</p>
+  <p class="sub">Todos os clientes que passam pelo Supabase, ordenados por reuniões.
+   Clique em uma linha (ou use o seletor acima) para abrir o relatório daquele cliente,
+   exatamente como ele o vê.</p>
   <div class="tw"><table><thead><tr>
     <th>Cliente</th><th class="n">Em prospecção</th><th class="n">Responderam</th>
     <th class="n">Interessadas</th><th class="n">Reuniões</th><th class="n">No-show</th>
@@ -239,9 +271,11 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
    <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span>Responderam</span></div>
  </section>
  <section class="card quiet">
-  <p class="qnote" style="margin:0">Esta tela é interna. Ela mostra números por cliente e
-   <strong>nunca</strong> nomes ou contatos dos prospects de nenhum cliente — essa informação é do
-   cliente, não da PipeLabs, e esta tela é usada em reunião comercial.</p>
+  <p class="qnote" style="margin:0">Esta tela é interna. <strong>Este resumo</strong> mostra apenas
+   números por cliente, nunca nomes ou contatos de prospects — é o que pode ficar visível em uma
+   reunião comercial. Abrir um cliente no seletor acima carrega o relatório completo dele,
+   <strong>com nomes e contatos</strong>, que são informação do cliente e não da PipeLabs: não deixe
+   essa tela aberta ao compartilhar a tela com outro cliente.</p>
  </section>
 </div>
 <footer><span>PipeLabs · painel interno</span><span>Não compartilhe este link.</span></footer>
@@ -265,7 +299,7 @@ const I18N = {
     s_replied:"Responderam", s_outreach:"Em prospecção",
     ch_email:"E-mail", fn_sub:"Do contato pesquisado à reunião agendada",
     fn_sub_li:"Tem o aceite da conexão, degrau que o e-mail não tem",
-    t_pace:"Ritmo semanal", sub_pace:"Novos contatos em prospecção e respostas por semana",
+    t_pace:"Ritmo semanal", sub_pace:"Novos contatos em prospecção e respostas por semana, nas últimas 8 semanas",
     t_hands:"Quem levantou a mão",
     sub_hands:"Quem demonstrou interesse ou agendou reunião. Mudou alguma coisa? Atualize o status aqui.",
     t_running:"O que está rodando agora", sub_running:"Campanhas com contatos em prospecção ou atividade recente",
@@ -284,6 +318,7 @@ const I18N = {
     emptyLeads:"Ninguém levantou a mão neste período ainda.",
     emptyCamps:"Nenhuma campanha ativa no momento.",
     emptyNotes:"A primeira leitura mensal chega no fim deste mês.",
+    capped:(n,t)=>"Mostrando os "+n+" mais recentes, de "+t+" no total.",
     promised:" · o que prometemos",
     copied:"Copiado: ", saved:"Status atualizado", failed:"Não foi possível atualizar",
     noEmail:"sem e-mail", noPhone:"sem telefone", openLi:"Abrir perfil no LinkedIn", noLinkedin:"sem LinkedIn",
@@ -299,7 +334,7 @@ const I18N = {
     s_replied:"Replied", s_outreach:"In outreach",
     ch_email:"Email", fn_sub:"From researched contact to booked meeting",
     fn_sub_li:"Includes the connection accept, a step email does not have",
-    t_pace:"Weekly pace", sub_pace:"New contacts in outreach and replies per week",
+    t_pace:"Weekly pace", sub_pace:"New contacts in outreach and replies per week, over the last 8 weeks",
     t_hands:"Who raised their hand",
     sub_hands:"People who showed interest or booked a meeting. Something changed? Update the status here.",
     t_running:"What's running now", sub_running:"Campaigns with contacts in outreach or recent activity",
@@ -318,6 +353,7 @@ const I18N = {
     emptyLeads:"Nobody has raised their hand in this period yet.",
     emptyCamps:"No active campaigns right now.",
     emptyNotes:"The first monthly read arrives at the end of this month.",
+    capped:(n,t)=>"Showing the "+n+" most recent, of "+t+" in total.",
     promised:" · what we promised",
     copied:"Copied: ", saved:"Status updated", failed:"Could not update",
     noEmail:"no email", noPhone:"no phone", openLi:"Open LinkedIn profile", noLinkedin:"no LinkedIn",
@@ -333,7 +369,7 @@ const I18N = {
     s_replied:"Respondieron", s_outreach:"En prospección",
     ch_email:"Correo", fn_sub:"Del contacto investigado a la reunión agendada",
     fn_sub_li:"Incluye la aceptación de conexión, un paso que el correo no tiene",
-    t_pace:"Ritmo semanal", sub_pace:"Nuevos contactos en prospección y respuestas por semana",
+    t_pace:"Ritmo semanal", sub_pace:"Nuevos contactos en prospección y respuestas por semana, en las últimas 8 semanas",
     t_hands:"Quién levantó la mano",
     sub_hands:"Personas que mostraron interés o agendaron reunión. ¿Cambió algo? Actualice el estado aquí.",
     t_running:"Qué está corriendo ahora", sub_running:"Campañas con contactos en prospección o actividad reciente",
@@ -352,6 +388,7 @@ const I18N = {
     emptyLeads:"Nadie ha levantado la mano en este período todavía.",
     emptyCamps:"Ninguna campaña activa por ahora.",
     emptyNotes:"La primera lectura mensual llega a fin de mes.",
+    capped:(n,t)=>"Mostrando los "+n+" más recientes, de "+t+" en total.",
     promised:" · lo que prometimos",
     copied:"Copiado: ", saved:"Estado actualizado", failed:"No se pudo actualizar",
     noEmail:"sin correo", noPhone:"sin teléfono", openLi:"Abrir perfil de LinkedIn", noLinkedin:"sin LinkedIn",
@@ -362,6 +399,11 @@ const I18N = {
 };
 
 let D = null, L = I18N.pt;
+// Read-only mode. Set only by the agency view: the report renders identically, but a stage is a
+// label rather than a dropdown. The real enforcement is server-side -- no write RPC accepts
+// agency credentials at all -- this only keeps the internal screen from offering a control that
+// would be refused, and stops a stray click during a call being written as the client's decision.
+let RO = false;
 const BR = n => Number(n || 0).toLocaleString(L.locale);
 
 const EMAIL_STAGES = ["researched","in_outreach","replied","interested","meeting_booked"];
@@ -381,8 +423,11 @@ function toast(m){
 
 function funnel(elId, ch, stages, color){
   const rows = stages.map(s => [L.stages[s], total(s, ch)]);
-  if (!rows[0][1]){ $(elId).innerHTML = '<p class="empty">' + L.emptyPeriod + '</p>'; return; }
-  const top = rows[0][1];
+  // Scale off the biggest bar, not the first one. A reply that arrives this month to a lead
+  // researched last month produces a funnel whose FIRST stage is 0 -- the old test blanked the
+  // whole card while the headline tiles right above it were showing that reply.
+  const top = Math.max(...rows.map(r => r[1]));
+  if (!top){ $(elId).innerHTML = '<p class="empty">' + L.emptyPeriod + '</p>'; return; }
   $(elId).innerHTML = rows.map(r => {
     const pct = Math.max((r[1]/top)*100, r[1] > 0 ? 1.5 : 0);
     return '<div class="row"><em>' + r[0] + '</em><s>' + BR(r[1]) + '</s>' +
@@ -453,7 +498,7 @@ function leads(){
   $("leads").innerHTML = rows.map(l => {
     const st = l.status;
     const moves = MOVES[st] || [];
-    const control = moves.length
+    const control = (!RO && moves.length)
       ? '<select class="status ' + STCLASS[st] + '" data-id="' + esc(l.outreach_id) + '" data-cur="' + esc(st) + '">' +
         '<option value="' + st + '" selected>' + L.st[st] + '</option>' +
         moves.map(m => '<option value="' + m + '">' + L.st[m] + '</option>').join("") + '</select>'
@@ -480,7 +525,11 @@ function leads(){
       '<span class="tag">' + esc(l.campaign_display) + '</span>' +
       '<span class="tag">' + new Date(l.event_at).toLocaleDateString(L.locale) + '</span>' +
       '</div></article>';
-  }).join("");
+  }).join("") +
+    // The API returns at most `leads_cap` hand-raisers. Say so rather than silently truncating.
+    ((D.leads_total || 0) > (D.leads_cap || 0)
+      ? '<p class="capnote">' + L.capped(BR(D.leads_cap), BR(D.leads_total)) + '</p>'
+      : '');
 
   document.querySelectorAll("[data-copy]").forEach(b => {
     b.onclick = () => {
@@ -571,9 +620,12 @@ function gate(pair){ $("gate-t").textContent = pair[0]; $("gate-p").textContent 
 /* ---------- agency view: separate token AND a password, because this one screen shows
       every client at once. The password travels in the POST body, never in the URL. ---------- */
 const AT = new URLSearchParams(location.search).get("a") || "";
+let AG  = null;   // {token, password} -- memory only, for the life of the tab
+let AGD = null;   // the roll-up payload, so going back to "Todos os clientes" costs no round trip
 
-function agencyChart(daily){
-  const end = new Date();
+function agencyChart(daily, generatedAt){
+  // Anchor on the server's clock like the client chart does, not the browser's.
+  const end = new Date(generatedAt || Date.now());
   const buckets = [], labels = [];
   for (let w = 7; w >= 0; w--){
     const hi = new Date(end); hi.setDate(hi.getDate() - w*7);
@@ -614,16 +666,97 @@ function renderAgency(d){
   $("a-outreach").textContent  = br(sum("in_outreach"));
   $("a-upd").textContent = "Atualizado " +
     new Date(d.generated_at).toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" });
+  // Each row opens that client's own report -- the same thing the dropdown does.
   $("a-rows").innerHTML = (d.clients||[]).map(c =>
-    '<tr><td class="nm">' + esc(c.name) + '</td>' +
+    '<tr class="crow" tabindex="0" role="button" data-client="' + esc(c.id) + '"' +
+    ' title="Abrir o relatório de ' + esc(c.name) + '">' +
+    '<td class="nm">' + esc(c.name) + '</td>' +
     '<td class="n">' + br(c.in_outreach) + '</td><td class="n">' + br(c.replied) + '</td>' +
     '<td class="n">' + br(c.interested) + '</td><td class="n">' + br(c.meetings) + '</td>' +
     '<td class="n">' + br(c.no_shows) + '</td></tr>').join("")
     || '<tr><td colspan="6" class="empty">Nenhum cliente ainda.</td></tr>';
-  agencyChart(d.daily || []);
+
+  document.querySelectorAll(".crow").forEach(tr => {
+    const go = () => { $("apick").value = tr.dataset.client; openClient(tr.dataset.client); };
+    tr.onclick = go;
+    tr.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); go(); } };
+  });
+
+  agencyChart(d.daily || [], d.generated_at);
   $("gate").style.display = "none";
+  $("app").style.display = "none";
   $("agency").style.display = "block";
   document.title = "PipeLabs · Painel da agência";
+}
+
+/* ---------- mounting a client report ----------
+   Both entry points end here: the client opening their own link, and the agency choosing a client
+   from the dropdown. One function, one payload shape, one render(). That is the only way "the
+   agency sees exactly what the client sees" is a fact rather than an intention -- there is no
+   second rendering path that could drift. */
+
+function wireChips(){
+  document.querySelectorAll(".chip").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll(".chip").forEach(o => o.setAttribute("aria-pressed", String(o === b)));
+      preset(b.dataset.p); render();
+    };
+  });
+  $("ini").onchange = $("fim").onchange = () => {
+    document.querySelectorAll(".chip").forEach(o => o.setAttribute("aria-pressed","false"));
+    render();
+  };
+}
+
+function mountClient(payload){
+  D = payload;
+  L = I18N[D.lang] || I18N.pt;                 // the client's own language, not the viewer's
+  document.documentElement.lang = L.htmlLang;
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = L[el.dataset.i18n]; });
+  $("ini").setAttribute("aria-label", L.p_30);
+  $("fim").setAttribute("aria-label", L.p_30);
+
+  $("title").textContent = L.title(D.client?.name || "");
+  $("upd").textContent = L.updated + " " +
+    new Date(D.generated_at).toLocaleString(L.locale, { dateStyle: "short", timeStyle: "short" });
+  document.title = "PipeLabs · " + (D.client?.name || "Report");
+
+  wireChips();
+  preset("d30");
+  document.querySelectorAll(".chip").forEach(o =>
+    o.setAttribute("aria-pressed", String(o.dataset.p === "d30")));
+
+  notes(); render();
+  $("gate").style.display   = "none";
+  $("agency").style.display = "none";
+  $("app").style.display    = "block";
+  window.scrollTo(0, 0);
+}
+
+/* ---------- agency: the client picker ---------- */
+
+function fillPicker(clients){
+  $("apick").innerHTML = '<option value="">Todos os clientes</option>' +
+    clients.map(c => '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>').join("");
+}
+
+async function openClient(id){
+  if (!id){ RO = false; renderAgency(AGD); window.scrollTo(0, 0); return; }
+  const sel = $("apick");
+  sel.disabled = true;
+  try {
+    const res = await fetch(API, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ agency_token: AG.token, password: AG.password, client_id: id })
+    });
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || "failed");
+    RO = true;                                  // this screen never writes
+    mountClient(j);
+  } catch {
+    sel.value = "";
+    toast("Não foi possível abrir esse relatório.");
+  } finally { sel.disabled = false; }
 }
 
 async function bootAgency(){
@@ -634,14 +767,26 @@ async function bootAgency(){
   $("pwform").onsubmit = async (e) => {
     e.preventDefault();
     const btn = $("pwform").querySelector("button");
+    const pw  = $("pw").value;
     btn.disabled = true; $("pwerr").textContent = "";
     try {
       const res = await fetch(API, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ agency_token: AT, password: $("pw").value })
+        body: JSON.stringify({ agency_token: AT, password: pw })
       });
       const j = await res.json();
       if (!j.ok) throw new Error();
+
+      // Kept in memory for the life of the tab so switching clients does not re-prompt. Never in
+      // the URL, never in localStorage/sessionStorage: a reload asks again, which is the point.
+      AG = { token: AT, password: pw };
+      AGD = j;
+      $("pw").value = "";
+      $("pwform").style.display = "none";
+
+      fillPicker(j.clients || []);
+      $("apick").onchange = () => openClient($("apick").value);
+      $("abar").style.display = "block";
       renderAgency(j);
     } catch {
       $("pwerr").textContent = "Senha incorreta.";
@@ -659,33 +804,10 @@ async function bootAgency(){
   try { res = await fetch(API + "?t=" + encodeURIComponent(T)); }
   catch { gate(L.offline); return; }
   if (!res.ok){ gate(L.dead); return; }
-  D = await res.json();
-  if (!D || !D.ok){ gate(L.dead); return; }
+  const payload = await res.json();
+  if (!payload || !payload.ok){ gate(L.dead); return; }
 
-  L = I18N[D.lang] || I18N.pt;
-  document.documentElement.lang = L.htmlLang;
-  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = L[el.dataset.i18n]; });
-  $("ini").setAttribute("aria-label", L.p_30);
-  $("fim").setAttribute("aria-label", L.p_30);
-
-  $("gate").style.display = "none";
-  $("app").style.display = "block";
-  $("title").textContent = L.title(D.client?.name || "");
-  $("upd").textContent = L.updated + " " +
-    new Date(D.generated_at).toLocaleString(L.locale, { dateStyle: "short", timeStyle: "short" });
-
-  document.querySelectorAll(".chip").forEach(b => {
-    b.onclick = () => {
-      document.querySelectorAll(".chip").forEach(o => o.setAttribute("aria-pressed", String(o === b)));
-      preset(b.dataset.p); render();
-    };
-  });
-  $("ini").onchange = $("fim").onchange = () => {
-    document.querySelectorAll(".chip").forEach(o => o.setAttribute("aria-pressed","false"));
-    render();
-  };
-
-  preset("d30"); notes(); render();
+  mountClient(payload);
 })();
 </script>
 </body>
