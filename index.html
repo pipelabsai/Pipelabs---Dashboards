@@ -378,13 +378,12 @@ const IC = {
  li:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>'
 };
 
-// The three stages the client may set, and the only moves the server will accept.
-// None of them writes best_rank -- see set_lead_stage_from_dashboard.
-const MOVES = {
-  interested:     ["meeting_booked"],
-  meeting_booked: ["no_show"],
-  no_show:        ["meeting_booked"]
-};
+// The three client-visible stages are freely interchangeable, and nothing else is reachable.
+// Anything the pipeline owns (sent, connected, bad_email, meeting_completed, won) is untouchable.
+// None of these writes best_rank -- see set_lead_stage_from_dashboard -- and every move is appended
+// to personalization.stage_history, so flipping back and forth loses nothing.
+const STAGES = ["interested","meeting_booked","no_show"];
+const MOVES = Object.fromEntries(STAGES.map(s => [s, STAGES.filter(o => o !== s)]));
 const STCLASS = { interested:"stOk", meeting_booked:"stCal", no_show:"stNo" };
 
 // 96% of contacts store linkedin_url without a scheme ("linkedin.com/in/x"). A bare href like
