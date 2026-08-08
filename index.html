@@ -141,7 +141,17 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 </head>
 <body>
 
-<div id="gate"><div><h1 id="gate-t">…</h1><p id="gate-p"></p></div></div>
+<div id="gate"><div>
+  <h1 id="gate-t">…</h1><p id="gate-p"></p>
+  <form id="pwform" style="display:none;margin-top:18px">
+    <input id="pw" type="password" autocomplete="current-password" placeholder="Senha"
+      style="font:600 14px 'Satoshi',sans-serif;padding:10px 14px;border:1px solid var(--line);
+             border-radius:10px;background:var(--card);color:var(--heading);min-width:230px">
+    <button type="submit" style="font:700 14px 'Satoshi',sans-serif;padding:10px 18px;margin-left:8px;
+      border:0;border-radius:10px;background:var(--brand);color:#fff;cursor:pointer">Entrar</button>
+    <p id="pwerr" style="color:#B91C1C;font-size:13px;margin:10px 0 0;min-height:1.2em"></p>
+  </form>
+</div></div>
 
 <div id="app">
 <header class="band"><div class="bandIn">
@@ -197,6 +207,47 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 </div>
 <footer><span data-i18n="f_left"></span><span data-i18n="f_right"></span></footer></div>
 </div>
+<div id="agency" style="display:none">
+<header class="band"><div class="bandIn">
+ <div class="brandrow">
+  <div class="lockup"><div class="mark">PL</div><div class="wordmark">PipeLabs</div></div>
+  <div class="upd" id="a-upd"></div>
+ </div>
+ <h1>Painel da agência</h1>
+ <div class="stats">
+  <div class="stat hero"><b>Reuniões agendadas</b><i id="a-meetings">0</i></div>
+  <div class="stat hero"><b>Respostas interessadas</b><i id="a-interested">0</i></div>
+  <div class="stat"><b>Responderam</b><i id="a-replied">0</i></div>
+  <div class="stat"><b>Em prospecção</b><i id="a-outreach">0</i></div>
+ </div>
+</div></header>
+<div class="wrap"><div class="grid">
+ <section class="card">
+  <h2>Por cliente</h2>
+  <p class="sub">Todos os clientes que passam pelo Supabase. Ordenado por reuniões.</p>
+  <div class="tw"><table><thead><tr>
+    <th>Cliente</th><th class="n">Em prospecção</th><th class="n">Responderam</th>
+    <th class="n">Interessadas</th><th class="n">Reuniões</th><th class="n">No-show</th>
+  </tr></thead><tbody id="a-rows"></tbody></table></div>
+ </section>
+ <section class="card">
+  <h2>Ritmo semanal · todos os clientes</h2>
+  <p class="sub">Novos contatos em prospecção e respostas por semana</p>
+  <svg id="a-chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img"></svg>
+  <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap">
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span>Em prospecção</span>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span>Responderam</span></div>
+ </section>
+ <section class="card quiet">
+  <p class="qnote" style="margin:0">Esta tela é interna. Ela mostra números por cliente e
+   <strong>nunca</strong> nomes ou contatos dos prospects de nenhum cliente — essa informação é do
+   cliente, não da PipeLabs, e esta tela é usada em reunião comercial.</p>
+ </section>
+</div>
+<footer><span>PipeLabs · painel interno</span><span>Não compartilhe este link.</span></footer>
+</div>
+</div>
+
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -517,7 +568,90 @@ function preset(p){
 
 function gate(pair){ $("gate-t").textContent = pair[0]; $("gate-p").textContent = pair[1]; }
 
+/* ---------- agency view: separate token AND a password, because this one screen shows
+      every client at once. The password travels in the POST body, never in the URL. ---------- */
+const AT = new URLSearchParams(location.search).get("a") || "";
+
+function agencyChart(daily){
+  const end = new Date();
+  const buckets = [], labels = [];
+  for (let w = 7; w >= 0; w--){
+    const hi = new Date(end); hi.setDate(hi.getDate() - w*7);
+    const lo = new Date(hi);  lo.setDate(lo.getDate() - 6);
+    buckets.push([ymd(lo), ymd(hi)]);
+    labels.push(lo.getDate() + "/" + (lo.getMonth()+1));
+  }
+  const series = evt => buckets.map(b =>
+    daily.reduce((s,x) => s + ((x.e === evt && x.d >= b[0] && x.d <= b[1]) ? x.n : 0), 0));
+  const a = series("in_outreach"), r = series("replied");
+  const W=900,H=250,Lm=46,Rm=12,Tm=16,Bm=38;
+  const max = Math.max(...a, ...r, 1) * 1.15;
+  const X = i => Lm + i*((W-Lm-Rm)/(a.length-1));
+  const Y = v => H-Bm - (v/max)*(H-Tm-Bm);
+  const line = arr => arr.map((v,i) => (i?"L":"M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+  let g = "";
+  for (let i = 0; i <= 3; i++){
+    const gy = Tm + i*((H-Tm-Bm)/3), val = Math.round(max - i*(max/3));
+    g += '<line x1="'+Lm+'" y1="'+gy+'" x2="'+(W-Rm)+'" y2="'+gy+'" stroke="var(--lineSoft)" stroke-width="1"/>' +
+         '<text x="'+(Lm-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+val.toLocaleString("pt-BR")+'</text>';
+  }
+  const lbl = labels.map((t,i) =>
+    '<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+t+'</text>').join("");
+  $("a-chart").innerHTML = g + lbl +
+    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#3464FB" opacity=".10"/>' +
+    '<path d="'+line(a)+'" fill="none" stroke="#3464FB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="'+line(r)+'" fill="none" stroke="#34DFFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#3464FB"/>' +
+    '<circle cx="'+X(r.length-1)+'" cy="'+Y(r.at(-1))+'" r="4" fill="#34DFFA"/>';
+}
+
+function renderAgency(d){
+  const br = n => Number(n||0).toLocaleString("pt-BR");
+  const sum = k => (d.clients||[]).reduce((s,c) => s + Number(c[k]||0), 0);
+  $("a-meetings").textContent  = br(sum("meetings"));
+  $("a-interested").textContent = br(sum("interested"));
+  $("a-replied").textContent   = br(sum("replied"));
+  $("a-outreach").textContent  = br(sum("in_outreach"));
+  $("a-upd").textContent = "Atualizado " +
+    new Date(d.generated_at).toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" });
+  $("a-rows").innerHTML = (d.clients||[]).map(c =>
+    '<tr><td class="nm">' + esc(c.name) + '</td>' +
+    '<td class="n">' + br(c.in_outreach) + '</td><td class="n">' + br(c.replied) + '</td>' +
+    '<td class="n">' + br(c.interested) + '</td><td class="n">' + br(c.meetings) + '</td>' +
+    '<td class="n">' + br(c.no_shows) + '</td></tr>').join("")
+    || '<tr><td colspan="6" class="empty">Nenhum cliente ainda.</td></tr>';
+  agencyChart(d.daily || []);
+  $("gate").style.display = "none";
+  $("agency").style.display = "block";
+  document.title = "PipeLabs · Painel da agência";
+}
+
+async function bootAgency(){
+  document.documentElement.lang = "pt-BR";
+  gate(["Painel da agência", "Este painel é interno. Digite a senha para continuar."]);
+  $("pwform").style.display = "block";
+  $("pw").focus();
+  $("pwform").onsubmit = async (e) => {
+    e.preventDefault();
+    const btn = $("pwform").querySelector("button");
+    btn.disabled = true; $("pwerr").textContent = "";
+    try {
+      const res = await fetch(API, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ agency_token: AT, password: $("pw").value })
+      });
+      const j = await res.json();
+      if (!j.ok) throw new Error();
+      renderAgency(j);
+    } catch {
+      $("pwerr").textContent = "Senha incorreta.";
+      $("pw").value = ""; $("pw").focus();
+    } finally { btn.disabled = false; }
+  };
+}
+
 (async function boot(){
+  if (AT) return bootAgency();
   gate(L.loading);
   if (!T){ gate(L.noToken); return; }
 
