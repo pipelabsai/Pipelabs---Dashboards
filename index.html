@@ -1,34 +1,35 @@
 <!doctype html>
-<html lang="pt-BR">
+<html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>PipeLabs · Relatório de prospecção</title>
+<title>PipeLabs · Report</title>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
 <!--
-  PipeLabs client report -- static page.
+  PipeLabs client report -- static shell. Contains NO client data.
 
-  Why a static file instead of the edge function serving it: the Supabase functions gateway
-  rewrites any text/html response to Content-Type: text/plain and attaches
-  "Content-Security-Policy: default-src 'none'; sandbox", so a page served from there renders
-  as source code. JSON passes through untouched, so the function is the API and this is the page.
+  It reads the share token from its own URL (?t=...) and fetches everything from the Supabase
+  edge function `report`. GitHub only hosts the file; it never touches the database.
 
-  Host it anywhere static (Hostinger, Cloudflare Pages, Netlify) -- or just open it from disk.
-  The client's token comes from this page's own URL:  index.html?t=<token>
+  Why not serve this from Supabase: the *.supabase.co gateway sniffs the response body and
+  rewrites anything HTML-shaped to text/plain with `Content-Security-Policy: default-src 'none';
+  sandbox`. Verified across five content types and on Storage objects too. JSON passes untouched.
 -->
 <style>
 :root{
  --brand:#3464FB; --brand50:#EBF0FE; --cyan:#34DFFA;
  --page:#F5F7FA; --card:#fff; --line:#E2E5EB; --lineSoft:#F0F1F4;
  --heading:#00003F; --body:#4D4D79; --muted:#8080A0; --alt:#EDEFF6;
- --ok:#0A7B4F; --okbg:#ECFDF5; --shadow:0 1px 2px rgba(0,0,63,.05);
+ --ok:#0A7B4F; --okbg:#ECFDF5; --warn:#B45309; --warnbg:#FEF3C7;
+ --shadow:0 1px 2px rgba(0,0,63,.05);
  --band:linear-gradient(160deg,#00003F 0%,#152864 100%);
 }
 @media (prefers-color-scheme:dark){:root{
  --page:#05052B; --card:#0D0D42; --line:#26264F; --lineSoft:#1C1C48;
  --heading:#F2F4FF; --body:#B3B3C7; --alt:#14143F; --brand50:#141C4A;
- --ok:#4ADE9E; --okbg:#052E20; --shadow:0 2px 4px rgba(0,0,0,.25);
+ --ok:#4ADE9E; --okbg:#052E20; --warn:#FCD34D; --warnbg:#3A2A08;
+ --shadow:0 2px 4px rgba(0,0,0,.25);
  --band:linear-gradient(160deg,#0D0D42 0%,#1F3C97 100%);}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--body);font-family:'Satoshi',ui-sans-serif,system-ui,sans-serif;
@@ -74,10 +75,10 @@ h1{margin:22px 0 18px;font-size:27px;font-weight:700;letter-spacing:-.025em;colo
 @media(min-width:880px){.stat i{font-size:34px}.stat.hero i{font-size:48px}}
 .grid{display:grid;gap:18px;margin-top:22px;grid-template-columns:repeat(12,minmax(0,1fr))}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
- padding:20px;grid-column:span 12;min-width:0}
-@media(min-width:900px){.c6{grid-column:span 6}.c7{grid-column:span 7}.c5{grid-column:span 5}}
+ padding:20px;grid-column:1/-1;min-width:0}
+@media(min-width:900px){.c6{grid-column:span 6}}
 h2{font-size:16px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:0;display:flex;align-items:center;gap:8px}
-h2 svg{width:17px;height:17px}
+h2 svg{width:17px;height:17px;flex:none}
 .sub{font-size:12.5px;color:var(--muted);margin:4px 0 16px}
 .fn{display:flex;flex-direction:column;gap:11px}
 .row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
@@ -96,7 +97,10 @@ h2 svg{width:17px;height:17px}
 .tag{font-size:11px;font-weight:700;border-radius:999px;padding:5px 10px;color:var(--muted);background:var(--alt);white-space:nowrap}
 .status{font:700 11px 'Satoshi',sans-serif;border-radius:999px;padding:5px 11px;border:1px solid transparent;cursor:pointer}
 .status:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
-.stCal{color:var(--brand);background:var(--brand50)} .stOk{color:var(--ok);background:var(--okbg)}
+.status:disabled{opacity:.6;cursor:progress}
+.stCal{color:var(--brand);background:var(--brand50)}
+.stOk{color:var(--ok);background:var(--okbg)}
+.stNo{color:var(--warn);background:var(--warnbg)}
 .links{display:flex;gap:6px;margin-left:auto}
 .ln{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);
  display:grid;place-items:center;color:var(--body);cursor:pointer;padding:0}
@@ -104,14 +108,14 @@ h2 svg{width:17px;height:17px}
 .ln:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .ln svg{width:15px;height:15px} .ln.off{opacity:.3;pointer-events:none}
 .tw{overflow-x:auto;margin:0 -20px;padding:0 20px}
-table{border-collapse:collapse;width:100%;min-width:600px}
+table{border-collapse:collapse;width:100%;min-width:640px}
 th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
  text-align:left;padding:10px 12px;background:var(--alt);white-space:nowrap}
 th:first-child{border-radius:8px 0 0 8px}th:last-child{border-radius:0 8px 8px 0}
 td{padding:14px 12px;border-bottom:1px solid var(--lineSoft);font-size:13.5px}
 tr:last-child td{border-bottom:0}
 td.n,th.n{text-align:right}td.n{font-variant-numeric:tabular-nums;font-weight:700;color:var(--heading)}
-td.nm{font-weight:700;color:var(--heading)}
+td.nm{font-weight:700;color:var(--heading);min-width:260px}
 .note{border-left:2px solid var(--brand);padding-left:15px}
 .note+.note{margin-top:20px;border-left-color:var(--line)}
 .note p:first-child{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);margin:0 0 5px}
@@ -137,7 +141,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 </head>
 <body>
 
-<div id="gate"><div><h1 id="gate-t">Carregando…</h1><p id="gate-p">Buscando os dados do seu relatório.</p></div></div>
+<div id="gate"><div><h1 id="gate-t">…</h1><p id="gate-p"></p></div></div>
 
 <div id="app">
 <header class="band"><div class="bandIn">
@@ -146,51 +150,52 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
   <div class="upd" id="upd"></div>
  </div>
  <h1 id="title"></h1>
- <div class="dates" role="group" aria-label="Período">
-  <button class="chip" data-p="mes" type="button">Este mês</button>
-  <button class="chip" data-p="d30" type="button" aria-pressed="true">Últimos 30 dias</button>
-  <button class="chip" data-p="tudo" type="button">Tudo</button>
-  <div class="range"><input class="dt" type="date" id="ini" aria-label="Data inicial">
-   <span>até</span><input class="dt" type="date" id="fim" aria-label="Data final"></div>
+ <div class="dates" role="group">
+  <button class="chip" data-p="mes" type="button" data-i18n="p_month"></button>
+  <button class="chip" data-p="d30" type="button" aria-pressed="true" data-i18n="p_30"></button>
+  <button class="chip" data-p="tudo" type="button" data-i18n="p_all"></button>
+  <div class="range"><input class="dt" type="date" id="ini">
+   <span data-i18n="to"></span><input class="dt" type="date" id="fim"></div>
  </div>
  <div class="stats">
-  <div class="stat hero"><b>Reuniões agendadas</b><i id="k-meeting_booked">0</i></div>
-  <div class="stat hero"><b>Respostas interessadas</b><i id="k-interested">0</i></div>
-  <div class="stat"><b>Responderam</b><i id="k-replied">0</i></div>
-  <div class="stat"><b>Em prospecção</b><i id="k-in_outreach">0</i></div>
+  <div class="stat hero"><b data-i18n="s_meetings"></b><i id="k-meeting_booked">0</i></div>
+  <div class="stat hero"><b data-i18n="s_interested"></b><i id="k-interested">0</i></div>
+  <div class="stat"><b data-i18n="s_replied"></b><i id="k-replied">0</i></div>
+  <div class="stat"><b data-i18n="s_outreach"></b><i id="k-in_outreach">0</i></div>
  </div>
 </div></header>
 
 <div class="wrap"><div class="grid">
- <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="none" stroke="#3464FB" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>E-mail</h2>
-  <p class="sub">Do contato pesquisado à reunião agendada</p><div class="fn" id="fn-email"></div></section>
+ <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="none" stroke="#3464FB" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="ch_email"></span></h2>
+  <p class="sub" data-i18n="fn_sub"></p><div class="fn" id="fn-email"></div></section>
  <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>LinkedIn</h2>
-  <p class="sub">Tem o aceite da conexão, degrau que o e-mail não tem</p><div class="fn" id="fn-linkedin"></div></section>
+  <p class="sub" data-i18n="fn_sub_li"></p><div class="fn" id="fn-linkedin"></div></section>
 
- <section class="card"><h2>Ritmo semanal</h2><p class="sub">Novos contatos em prospecção e respostas por semana</p>
-  <svg id="chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img" aria-label="Ritmo semanal"></svg>
+ <section class="card"><h2 data-i18n="t_pace"></h2><p class="sub" data-i18n="sub_pace"></p>
+  <svg id="chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img"></svg>
   <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap">
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span>Em prospecção</span>
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span>Responderam</span></div></section>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span><span data-i18n="s_outreach"></span></span>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span><span data-i18n="s_replied"></span></span></div></section>
 
- <section class="card"><h2>Quem levantou a mão</h2>
-  <p class="sub">Quem demonstrou interesse ou agendou reunião. Fechou a reunião? Atualize o status aqui.</p>
+ <section class="card"><h2 data-i18n="t_hands"></h2><p class="sub" data-i18n="sub_hands"></p>
   <div class="leads" id="leads"></div></section>
 
- <section class="card c7"><h2>O que está rodando agora</h2><p class="sub">Campanhas com contatos em prospecção ou atividade recente</p>
-  <div class="tw"><table><thead><tr><th>Campanha</th><th>Canal</th><th class="n">Em prospecção</th>
-   <th class="n">Respostas</th><th class="n">Interessadas</th><th class="n">Reuniões</th></tr></thead>
-   <tbody id="camps"></tbody></table></div></section>
+ <section class="card"><h2 data-i18n="t_running"></h2><p class="sub" data-i18n="sub_running"></p>
+  <div class="tw"><table><thead><tr>
+   <th data-i18n="th_campaign"></th><th data-i18n="th_channel"></th>
+   <th class="n" data-i18n="s_outreach"></th><th class="n" data-i18n="th_replies"></th>
+   <th class="n" data-i18n="th_interested"></th><th class="n" data-i18n="th_meetings"></th>
+  </tr></thead><tbody id="camps"></tbody></table></div></section>
 
- <section class="card c5"><h2>Nossa leitura do mês</h2><p class="sub">O que estamos mudando, e o que prometemos da última vez</p>
+ <section class="card"><h2 data-i18n="t_read"></h2><p class="sub" data-i18n="sub_read"></p>
   <div id="notes"></div></section>
 
  <section class="card quiet"><div class="qrow">
-  <div><span class="qn" id="k-invalid_email">0</span> <span class="ql">endereços inválidos filtrados antes do envio</span></div>
-  <div><span class="qn" id="k-excluded_before_send">0</span> <span class="ql">contatos excluídos antes do envio</span></div></div>
-  <p class="qnote">Endereços inválidos são removidos antes do disparo para proteger a reputação do seu domínio. Os excluídos são perfis bloqueados, sem foto, ou com indício de que a pessoa trocou de empresa.</p></section>
+  <div><span class="qn" id="k-invalid_email">0</span> <span class="ql" data-i18n="q_invalid"></span></div>
+  <div><span class="qn" id="k-excluded_before_send">0</span> <span class="ql" data-i18n="q_excluded"></span></div></div>
+  <p class="qnote" data-i18n="q_note"></p></section>
 </div>
-<footer><span>Relatório gerado por PipeLabs</span><span>Dúvidas? Fale com o seu ponto de contato.</span></footer></div>
+<footer><span data-i18n="f_left"></span><span data-i18n="f_right"></span></footer></div>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
 
@@ -198,27 +203,125 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 const API = "https://ylocasufdlaocmnyvyta.supabase.co/functions/v1/report";
 const T = new URLSearchParams(location.search).get("t") || "";
 const $ = id => document.getElementById(id);
-const BR = n => Number(n || 0).toLocaleString("pt-BR");
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g,
   c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" })[c]);
 
-let D = null;
+const I18N = {
+  pt: { locale:"pt-BR", htmlLang:"pt-BR",
+    title:n=>"Prospecção para "+n, updated:"Atualizado", to:"até",
+    p_month:"Este mês", p_30:"Últimos 30 dias", p_all:"Tudo",
+    s_meetings:"Reuniões agendadas", s_interested:"Respostas interessadas",
+    s_replied:"Responderam", s_outreach:"Em prospecção",
+    ch_email:"E-mail", fn_sub:"Do contato pesquisado à reunião agendada",
+    fn_sub_li:"Tem o aceite da conexão, degrau que o e-mail não tem",
+    t_pace:"Ritmo semanal", sub_pace:"Novos contatos em prospecção e respostas por semana",
+    t_hands:"Quem levantou a mão",
+    sub_hands:"Quem demonstrou interesse ou agendou reunião. Mudou alguma coisa? Atualize o status aqui.",
+    t_running:"O que está rodando agora", sub_running:"Campanhas com contatos em prospecção ou atividade recente",
+    th_campaign:"Campanha", th_channel:"Canal", th_replies:"Respostas",
+    th_interested:"Interessadas", th_meetings:"Reuniões",
+    t_read:"Nossa leitura do mês", sub_read:"O que estamos mudando, e o que prometemos da última vez",
+    q_invalid:"endereços inválidos filtrados antes do envio",
+    q_excluded:"contatos excluídos antes do envio",
+    q_note:"Endereços inválidos são removidos antes do disparo para proteger a reputação do seu domínio. Os excluídos são perfis bloqueados, sem foto, ou com indício de que a pessoa trocou de empresa.",
+    f_left:"Relatório gerado por PipeLabs", f_right:"Dúvidas? Fale com o seu ponto de contato.",
+    stages:{ researched:"Pesquisados", in_outreach:"Em prospecção", connected:"Conexões aceitas",
+      replied:"Responderam", interested:"Interessados", meeting_booked:"Reuniões agendadas" },
+    st:{ interested:"Interessado", meeting_booked:"Reunião agendada", no_show:"Não compareceu" },
+    employees:"funcionários", people:n=>n+(n===1?" pessoa":" pessoas"),
+    emptyPeriod:"Nada neste período ainda.",
+    emptyLeads:"Ninguém levantou a mão neste período ainda.",
+    emptyCamps:"Nenhuma campanha ativa no momento.",
+    emptyNotes:"A primeira leitura mensal chega no fim deste mês.",
+    promised:" · o que prometemos",
+    copied:"Copiado: ", saved:"Status atualizado", failed:"Não foi possível atualizar",
+    noEmail:"sem e-mail", noPhone:"sem telefone", openLi:"Abrir perfil no LinkedIn",
+    loading:["Carregando…","Buscando os dados do seu relatório."],
+    noToken:["Link incompleto","Este endereço está sem o código de acesso. Peça o link completo ao seu contato na PipeLabs."],
+    dead:["Este link não está ativo","Fale com o seu ponto de contato na PipeLabs."],
+    offline:["Sem conexão","Não foi possível falar com o servidor. Tente novamente em instantes."] },
 
-const STAGES_EMAIL = [["researched","Pesquisados"],["in_outreach","Em prospecção"],
-  ["replied","Responderam"],["interested","Interessados"],["meeting_booked","Reuniões agendadas"]];
-const STAGES_LI = [["researched","Pesquisados"],["in_outreach","Em prospecção"],
-  ["connected","Conexões aceitas"],["replied","Responderam"],["interested","Interessados"],
-  ["meeting_booked","Reuniões agendadas"]];
+  en: { locale:"en-US", htmlLang:"en",
+    title:n=>"Outreach for "+n, updated:"Updated", to:"to",
+    p_month:"This month", p_30:"Last 30 days", p_all:"All time",
+    s_meetings:"Meetings booked", s_interested:"Interested replies",
+    s_replied:"Replied", s_outreach:"In outreach",
+    ch_email:"Email", fn_sub:"From researched contact to booked meeting",
+    fn_sub_li:"Includes the connection accept, a step email does not have",
+    t_pace:"Weekly pace", sub_pace:"New contacts in outreach and replies per week",
+    t_hands:"Who raised their hand",
+    sub_hands:"People who showed interest or booked a meeting. Something changed? Update the status here.",
+    t_running:"What's running now", sub_running:"Campaigns with contacts in outreach or recent activity",
+    th_campaign:"Campaign", th_channel:"Channel", th_replies:"Replies",
+    th_interested:"Interested", th_meetings:"Meetings",
+    t_read:"Our read this month", sub_read:"What we're changing, and what we promised last time",
+    q_invalid:"invalid addresses filtered before sending",
+    q_excluded:"contacts excluded before sending",
+    q_note:"Invalid addresses are removed before sending to protect your domain reputation. Excluded contacts are locked profiles, profiles with no photo, or people who appear to have changed company.",
+    f_left:"Report generated by PipeLabs", f_right:"Questions? Talk to your point of contact.",
+    stages:{ researched:"Researched", in_outreach:"In outreach", connected:"Connections accepted",
+      replied:"Replied", interested:"Interested", meeting_booked:"Meetings booked" },
+    st:{ interested:"Interested", meeting_booked:"Meeting booked", no_show:"No-show" },
+    employees:"employees", people:n=>n+(n===1?" person":" people"),
+    emptyPeriod:"Nothing in this period yet.",
+    emptyLeads:"Nobody has raised their hand in this period yet.",
+    emptyCamps:"No active campaigns right now.",
+    emptyNotes:"The first monthly read arrives at the end of this month.",
+    promised:" · what we promised",
+    copied:"Copied: ", saved:"Status updated", failed:"Could not update",
+    noEmail:"no email", noPhone:"no phone", openLi:"Open LinkedIn profile",
+    loading:["Loading…","Fetching your report."],
+    noToken:["Incomplete link","This address is missing its access code. Ask your PipeLabs contact for the full link."],
+    dead:["This link is not active","Talk to your point of contact at PipeLabs."],
+    offline:["No connection","Could not reach the server. Please try again shortly."] },
+
+  es: { locale:"es-419", htmlLang:"es",
+    title:n=>"Prospección para "+n, updated:"Actualizado", to:"hasta",
+    p_month:"Este mes", p_30:"Últimos 30 días", p_all:"Todo",
+    s_meetings:"Reuniones agendadas", s_interested:"Respuestas interesadas",
+    s_replied:"Respondieron", s_outreach:"En prospección",
+    ch_email:"Correo", fn_sub:"Del contacto investigado a la reunión agendada",
+    fn_sub_li:"Incluye la aceptación de conexión, un paso que el correo no tiene",
+    t_pace:"Ritmo semanal", sub_pace:"Nuevos contactos en prospección y respuestas por semana",
+    t_hands:"Quién levantó la mano",
+    sub_hands:"Personas que mostraron interés o agendaron reunión. ¿Cambió algo? Actualice el estado aquí.",
+    t_running:"Qué está corriendo ahora", sub_running:"Campañas con contactos en prospección o actividad reciente",
+    th_campaign:"Campaña", th_channel:"Canal", th_replies:"Respuestas",
+    th_interested:"Interesadas", th_meetings:"Reuniones",
+    t_read:"Nuestra lectura del mes", sub_read:"Qué estamos cambiando, y qué prometimos la última vez",
+    q_invalid:"direcciones inválidas filtradas antes del envío",
+    q_excluded:"contactos excluidos antes del envío",
+    q_note:"Las direcciones inválidas se eliminan antes del envío para proteger la reputación de su dominio. Los excluidos son perfiles bloqueados, sin foto, o con indicios de cambio de empresa.",
+    f_left:"Informe generado por PipeLabs", f_right:"¿Dudas? Hable con su punto de contacto.",
+    stages:{ researched:"Investigados", in_outreach:"En prospección", connected:"Conexiones aceptadas",
+      replied:"Respondieron", interested:"Interesados", meeting_booked:"Reuniones agendadas" },
+    st:{ interested:"Interesado", meeting_booked:"Reunión agendada", no_show:"No asistió" },
+    employees:"empleados", people:n=>n+(n===1?" persona":" personas"),
+    emptyPeriod:"Nada en este período todavía.",
+    emptyLeads:"Nadie ha levantado la mano en este período todavía.",
+    emptyCamps:"Ninguna campaña activa por ahora.",
+    emptyNotes:"La primera lectura mensual llega a fin de mes.",
+    promised:" · lo que prometimos",
+    copied:"Copiado: ", saved:"Estado actualizado", failed:"No se pudo actualizar",
+    noEmail:"sin correo", noPhone:"sin teléfono", openLi:"Abrir perfil de LinkedIn",
+    loading:["Cargando…","Buscando los datos de su informe."],
+    noToken:["Enlace incompleto","A esta dirección le falta el código de acceso. Pida el enlace completo a su contacto en PipeLabs."],
+    dead:["Este enlace no está activo","Hable con su punto de contacto en PipeLabs."],
+    offline:["Sin conexión","No fue posible contactar al servidor. Intente de nuevo en unos instantes."] }
+};
+
+let D = null, L = I18N.pt;
+const BR = n => Number(n || 0).toLocaleString(L.locale);
+
+const EMAIL_STAGES = ["researched","in_outreach","replied","interested","meeting_booked"];
+const LI_STAGES    = ["researched","in_outreach","connected","replied","interested","meeting_booked"];
 
 const ymd = d => d.toISOString().slice(0,10);
 const today = () => new Date(D.generated_at || Date.now());
 const bounds = () => ({ a: $("ini").value, b: $("fim").value });
 const inRange = d => { const r = bounds(); return (!r.a || d >= r.a) && (!r.b || d <= r.b); };
-
-function total(evt, ch){
-  return D.daily.reduce((s,x) =>
-    s + ((x.e === evt && (!ch || x.ch === ch) && inRange(x.d)) ? x.n : 0), 0);
-}
+const total = (evt, ch) => D.daily.reduce((s,x) =>
+  s + ((x.e === evt && (!ch || x.ch === ch) && inRange(x.d)) ? x.n : 0), 0);
 
 function toast(m){
   const t = $("toast"); t.textContent = m; t.classList.add("on");
@@ -226,8 +329,8 @@ function toast(m){
 }
 
 function funnel(elId, ch, stages, color){
-  const rows = stages.map(s => [s[1], total(s[0], ch)]);
-  if (!rows[0][1]){ $(elId).innerHTML = '<p class="empty">Nada neste período ainda.</p>'; return; }
+  const rows = stages.map(s => [L.stages[s], total(s, ch)]);
+  if (!rows[0][1]){ $(elId).innerHTML = '<p class="empty">' + L.emptyPeriod + '</p>'; return; }
   const top = rows[0][1];
   $(elId).innerHTML = rows.map(r => {
     const pct = Math.max((r[1]/top)*100, r[1] > 0 ? 1.5 : 0);
@@ -248,21 +351,21 @@ function weekly(){
   const series = evt => buckets.map(b =>
     D.daily.reduce((s,x) => s + ((x.e === evt && x.d >= b[0] && x.d <= b[1]) ? x.n : 0), 0));
   const a = series("in_outreach"), r = series("replied");
-  const W=900,H=250,L=46,Rr=12,Tp=16,B=38;
+  const W=900,H=250,Lm=46,Rm=12,Tm=16,Bm=38;
   const max = Math.max(...a, ...r, 1) * 1.15;
-  const X = i => L + i*((W-L-Rr)/(a.length-1));
-  const Y = v => H-B - (v/max)*(H-Tp-B);
+  const X = i => Lm + i*((W-Lm-Rm)/(a.length-1));
+  const Y = v => H-Bm - (v/max)*(H-Tm-Bm);
   const line = arr => arr.map((v,i) => (i?"L":"M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
   let g = "";
   for (let i = 0; i <= 3; i++){
-    const gy = Tp + i*((H-Tp-B)/3), val = Math.round(max - i*(max/3));
-    g += '<line x1="'+L+'" y1="'+gy+'" x2="'+(W-Rr)+'" y2="'+gy+'" stroke="var(--lineSoft)" stroke-width="1"/>' +
-         '<text x="'+(L-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+BR(val)+'</text>';
+    const gy = Tm + i*((H-Tm-Bm)/3), val = Math.round(max - i*(max/3));
+    g += '<line x1="'+Lm+'" y1="'+gy+'" x2="'+(W-Rm)+'" y2="'+gy+'" stroke="var(--lineSoft)" stroke-width="1"/>' +
+         '<text x="'+(Lm-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+BR(val)+'</text>';
   }
   const lbl = labels.map((t,i) =>
     '<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+t+'</text>').join("");
   $("chart").innerHTML = g + lbl +
-    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-B)+' L'+L+' '+(H-B)+' Z" fill="#3464FB" opacity=".10"/>' +
+    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#3464FB" opacity=".10"/>' +
     '<path d="'+line(a)+'" fill="none" stroke="#3464FB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
     '<path d="'+line(r)+'" fill="none" stroke="#34DFFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
     '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#3464FB"/>' +
@@ -275,74 +378,83 @@ const IC = {
  li:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>'
 };
 
+// The three stages the client may set, and the only moves the server will accept.
+// None of them writes best_rank -- see set_lead_stage_from_dashboard.
+const MOVES = {
+  interested:     ["meeting_booked"],
+  meeting_booked: ["no_show"],
+  no_show:        ["meeting_booked"]
+};
+const STCLASS = { interested:"stOk", meeting_booked:"stCal", no_show:"stNo" };
+
 function leads(){
   const rows = (D.leads || []).filter(l => l.event_at && inRange(String(l.event_at).slice(0,10)));
-  if (!rows.length){
-    $("leads").innerHTML = '<p class="empty">Ninguém levantou a mão neste período ainda.</p>'; return;
-  }
+  if (!rows.length){ $("leads").innerHTML = '<p class="empty">' + L.emptyLeads + '</p>'; return; }
+
   $("leads").innerHTML = rows.map(l => {
-    const booked = ["meeting_booked","meeting_completed","won"].includes(l.status);
-    const firmo = [l.industry, l.headcount ? BR(l.headcount) + " funcionários" : null].filter(Boolean).join(" · ");
+    const st = l.status;
+    const moves = MOVES[st] || [];
+    const control = moves.length
+      ? '<select class="status ' + STCLASS[st] + '" data-id="' + esc(l.outreach_id) + '" data-cur="' + esc(st) + '">' +
+        '<option value="' + st + '" selected>' + L.st[st] + '</option>' +
+        moves.map(m => '<option value="' + m + '">' + L.st[m] + '</option>').join("") + '</select>'
+      : '<span class="tag ' + (STCLASS[st] || "") + '">' + (L.st[st] || st) + '</span>';
+    const firmo = [l.industry, l.headcount ? BR(l.headcount) + " " + L.employees : null].filter(Boolean).join(" · ");
     const who = [l.title, l.company_name].filter(Boolean).join(" · ");
     return '<article class="lead"><div class="ltop"><div>' +
       '<div class="lname">' + esc(l.full_name) + '</div>' +
       '<div class="lmeta">' + esc(who) + '</div>' +
       (firmo ? '<div class="lfirmo">' + esc(firmo) + '</div>' : '') +
       '</div><div class="links">' +
-      '<button class="ln ' + (l.email?"":"off") + '" data-copy="' + esc(l.email) + '" title="' + esc(l.email || "sem e-mail") + '">' + IC.mail + '</button>' +
-      '<button class="ln ' + (l.phone?"":"off") + '" data-copy="' + esc(l.phone) + '" title="' + esc(l.phone || "sem telefone") + '">' + IC.phone + '</button>' +
-      '<a class="ln ' + (l.linkedin_url?"":"off") + '" href="' + esc(l.linkedin_url || "#") + '" target="_blank" rel="noopener" title="Abrir perfil no LinkedIn">' + IC.li + '</a>' +
+      '<button class="ln ' + (l.email?"":"off") + '" data-copy="' + esc(l.email) + '" title="' + esc(l.email || L.noEmail) + '">' + IC.mail + '</button>' +
+      '<button class="ln ' + (l.phone?"":"off") + '" data-copy="' + esc(l.phone) + '" title="' + esc(l.phone || L.noPhone) + '">' + IC.phone + '</button>' +
+      '<a class="ln ' + (l.linkedin_url?"":"off") + '" href="' + esc(l.linkedin_url || "#") + '" target="_blank" rel="noopener" title="' + L.openLi + '">' + IC.li + '</a>' +
       '</div></div>' +
       (l.last_reply_text ? '<p class="quote">&ldquo;' + esc(l.last_reply_text) + '&rdquo;</p>' : '') +
-      '<div class="lfoot">' +
-      // Confirming is ONE-WAY: once a meeting is booked there is no control to undo it.
-      // best_rank is a monotonic high-water mark the whole system depends on, so a public
-      // surface must never lower it. A mis-click is corrected by PipeLabs, not by the page.
-      (booked
-        ? '<span class="tag stCal" style="color:var(--brand);background:var(--brand50)">Reunião agendada</span>'
-        : '<select class="status stOk" data-id="' + esc(l.outreach_id) + '">' +
-          '<option value="ok" selected>Interessado</option>' +
-          '<option value="cal">Reunião agendada</option></select>') +
-      '<span class="tag">' + (l.channel === "linkedin" ? "LinkedIn" : "E-mail") + '</span>' +
+      '<div class="lfoot">' + control +
+      '<span class="tag">' + (l.channel === "linkedin" ? "LinkedIn" : L.ch_email) + '</span>' +
       '<span class="tag">' + esc(l.campaign_display) + '</span>' +
-      '<span class="tag">' + new Date(l.event_at).toLocaleDateString("pt-BR") + '</span>' +
+      '<span class="tag">' + new Date(l.event_at).toLocaleDateString(L.locale) + '</span>' +
       '</div></article>';
   }).join("");
 
   document.querySelectorAll("[data-copy]").forEach(b => {
     b.onclick = () => {
       const v = b.getAttribute("data-copy"); if (!v) return;
-      navigator.clipboard?.writeText(v); toast("Copiado: " + v);
+      navigator.clipboard?.writeText(v); toast(L.copied + v);
     };
   });
 
   document.querySelectorAll(".status").forEach(s => {
     s.onchange = async () => {
-      if (s.value !== "cal"){ s.value = "ok"; return; }   // nothing else is offered
-      if (!confirm("Confirmar que esta reunião foi agendada?\n\nEssa marcação não pode ser desfeita aqui — se errar, é só nos avisar.")){
-        s.value = "ok"; return;
-      }
+      const stage = s.value, prev = s.dataset.cur;
+      if (stage === prev) return;
       s.disabled = true;
       try {
         const res = await fetch(API + "?t=" + encodeURIComponent(T), {
           method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ outreach_id: s.dataset.id })
+          body: JSON.stringify({ outreach_id: s.dataset.id, stage })
         });
         const j = await res.json();
-        if (!j.ok) throw new Error(j.error || "falhou");
+        if (!j.ok) throw new Error(j.error || "failed");
+
         const lead = D.leads.find(x => x.outreach_id === s.dataset.id);
         if (lead){
-          lead.status = "meeting_booked";
+          lead.status = stage;
+          // meetings are counted by CURRENT status, so keep the local tally in step
           const day = String(lead.event_at).slice(0,10);
-          const hit = D.daily.find(x => x.e === "meeting_booked" && x.d === day && x.ch === lead.channel);
-          if (hit) hit.n += 1;
-          else D.daily.push({ d: day, ch: lead.channel, e: "meeting_booked", n: 1 });
+          const delta = (stage === "meeting_booked" ? 1 : 0) - (prev === "meeting_booked" ? 1 : 0);
+          if (delta){
+            const hit = D.daily.find(x => x.e === "meeting_booked" && x.d === day && x.ch === lead.channel);
+            if (hit) hit.n += delta;
+            else if (delta > 0) D.daily.push({ d: day, ch: lead.channel, e: "meeting_booked", n: 1 });
+          }
         }
-        render();                       // redraws the row as a locked pill
-        toast("Reunião registrada");
+        render();
+        toast(L.saved);
       } catch {
-        s.value = "ok"; s.disabled = false;
-        toast("Não foi possível atualizar");
+        s.value = prev; s.disabled = false;
+        toast(L.failed);
       }
     };
   });
@@ -351,10 +463,10 @@ function leads(){
 function camps(){
   const rows = D.campaigns || [];
   if (!rows.length){
-    $("camps").innerHTML = '<tr><td colspan="6" class="empty">Nenhuma campanha ativa no momento.</td></tr>'; return;
+    $("camps").innerHTML = '<tr><td colspan="6" class="empty">' + L.emptyCamps + '</td></tr>'; return;
   }
   $("camps").innerHTML = rows.map(c => {
-    const ch = String(c.channels || "").replace("linkedin","LinkedIn").replace("email","E-mail");
+    const ch = String(c.channels || "").replace("linkedin","LinkedIn").replace("email", L.ch_email);
     return '<tr><td class="nm">' + esc(c.campaign_display) + '</td><td>' + esc(ch) + '</td>' +
       '<td class="n">' + BR(c.in_outreach) + '</td><td class="n">' + BR(c.replies) + '</td>' +
       '<td class="n">' + BR(c.interested_replies) + '</td><td class="n">' + BR(c.meetings) + '</td></tr>';
@@ -363,11 +475,9 @@ function camps(){
 
 function notes(){
   const rows = D.notes || [];
-  if (!rows.length){
-    $("notes").innerHTML = '<p class="empty">A primeira leitura mensal chega no fim deste mês.</p>'; return;
-  }
+  if (!rows.length){ $("notes").innerHTML = '<p class="empty">' + L.emptyNotes + '</p>'; return; }
   $("notes").innerHTML = rows.map((n,i) =>
-    '<div class="note"><p>' + esc(n.period) + (i ? " · o que prometemos" : "") + '</p><p>' + esc(n.body) + '</p></div>'
+    '<div class="note"><p>' + esc(n.period) + (i ? L.promised : "") + '</p><p>' + esc(n.body) + '</p></div>'
   ).join("");
 }
 
@@ -378,8 +488,8 @@ function headline(){
 
 function render(){
   headline();
-  funnel("fn-email","email",STAGES_EMAIL,"#3464FB");
-  funnel("fn-linkedin","linkedin",STAGES_LI,"#34DFFA");
+  funnel("fn-email","email",EMAIL_STAGES,"#3464FB");
+  funnel("fn-linkedin","linkedin",LI_STAGES,"#34DFFA");
   weekly(); leads(); camps();
 }
 
@@ -392,25 +502,30 @@ function preset(p){
   $("ini").value = ymd(a); $("fim").value = ymd(end);
 }
 
-function fail(title, msg){
-  $("gate-t").textContent = title;
-  $("gate-p").textContent = msg;
-}
+function gate(pair){ $("gate-t").textContent = pair[0]; $("gate-p").textContent = pair[1]; }
 
 (async function boot(){
-  if (!T){ fail("Link incompleto", "Este endereço está sem o código de acesso. Peça o link completo ao seu contato na PipeLabs."); return; }
+  gate(L.loading);
+  if (!T){ gate(L.noToken); return; }
+
   let res;
   try { res = await fetch(API + "?t=" + encodeURIComponent(T)); }
-  catch { fail("Sem conexão", "Não foi possível falar com o servidor. Tente novamente em instantes."); return; }
-  if (!res.ok){ fail("Este link não está ativo", "Fale com o seu ponto de contato na PipeLabs."); return; }
+  catch { gate(L.offline); return; }
+  if (!res.ok){ gate(L.dead); return; }
   D = await res.json();
-  if (!D || !D.ok){ fail("Este link não está ativo", "Fale com o seu ponto de contato na PipeLabs."); return; }
+  if (!D || !D.ok){ gate(L.dead); return; }
+
+  L = I18N[D.lang] || I18N.pt;
+  document.documentElement.lang = L.htmlLang;
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = L[el.dataset.i18n]; });
+  $("ini").setAttribute("aria-label", L.p_30);
+  $("fim").setAttribute("aria-label", L.p_30);
 
   $("gate").style.display = "none";
   $("app").style.display = "block";
-  $("title").textContent = "Prospecção para " + (D.client?.name || "");
-  $("upd").textContent = "Atualizado " +
-    new Date(D.generated_at).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+  $("title").textContent = L.title(D.client?.name || "");
+  $("upd").textContent = L.updated + " " +
+    new Date(D.generated_at).toLocaleString(L.locale, { dateStyle: "short", timeStyle: "short" });
 
   document.querySelectorAll(".chip").forEach(b => {
     b.onclick = () => {
