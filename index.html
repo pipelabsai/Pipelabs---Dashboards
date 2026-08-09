@@ -156,6 +156,14 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 .crow:hover td{background:var(--alt)}
 .crow:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
 .capnote{font-size:12.5px;color:var(--muted);margin:14px 0 0}
+/* Progressive disclosure for the hand-raiser list. A nested scrollbox was rejected: this page is
+   opened from a WhatsApp link on a phone, where an inner scroll area fights the page scroll. */
+.moreRow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+.more{font:700 13px 'Satoshi',sans-serif;color:var(--brand);background:var(--brand50);
+ border:1px solid transparent;border-radius:999px;padding:9px 18px;cursor:pointer}
+.more:hover{border-color:var(--brand)}
+.more:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.moreCount{font-size:12.5px;color:var(--muted)}
 #gate{display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
 #gate h1{color:var(--heading);font-size:20px;margin:0 0 8px}
 #app{display:none}
@@ -225,7 +233,8 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
    <th data-i18n="th_campaign"></th><th data-i18n="th_channel"></th>
    <th class="n" data-i18n="s_outreach"></th><th class="n" data-i18n="th_replies"></th>
    <th class="n" data-i18n="th_interested"></th><th class="n" data-i18n="th_meetings"></th>
-  </tr></thead><tbody id="camps"></tbody></table></div></section>
+  </tr></thead><tbody id="camps"></tbody></table></div>
+  <p class="capnote" id="campNote"></p></section>
 
  <section class="card"><h2 data-i18n="t_read"></h2><p class="sub" data-i18n="sub_read"></p>
   <div id="notes"></div></section>
@@ -248,7 +257,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
   <div class="stat hero"><b>Reuniões agendadas</b><i id="a-meetings">0</i></div>
   <div class="stat hero"><b>Respostas interessadas</b><i id="a-interested">0</i></div>
   <div class="stat"><b>Responderam</b><i id="a-replied">0</i></div>
-  <div class="stat"><b>Em prospecção</b><i id="a-outreach">0</i></div>
+  <div class="stat"><b>Enviados para uma campanha</b><i id="a-outreach">0</i></div>
  </div>
 </div></header>
 <div class="wrap"><div class="grid">
@@ -258,16 +267,16 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
    Clique em uma linha (ou use o seletor acima) para abrir o relatório daquele cliente,
    exatamente como ele o vê.</p>
   <div class="tw"><table><thead><tr>
-    <th>Cliente</th><th class="n">Em prospecção</th><th class="n">Responderam</th>
+    <th>Cliente</th><th class="n">Enviados p/ campanha</th><th class="n">Responderam</th>
     <th class="n">Interessadas</th><th class="n">Reuniões</th><th class="n">No-show</th>
   </tr></thead><tbody id="a-rows"></tbody></table></div>
  </section>
  <section class="card">
   <h2>Ritmo semanal · todos os clientes</h2>
-  <p class="sub">Novos contatos em prospecção e respostas por semana</p>
+  <p class="sub">Novos contatos enviados para campanha e respostas por semana, nas últimas 8 semanas</p>
   <svg id="a-chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img"></svg>
   <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap">
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span>Em prospecção</span>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span>Enviados para campanha</span>
    <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span>Responderam</span></div>
  </section>
  <section class="card quiet">
@@ -296,7 +305,7 @@ const I18N = {
     title:n=>"Prospecção para "+n, updated:"Atualizado", to:"até",
     p_month:"Este mês", p_30:"Últimos 30 dias", p_all:"Tudo",
     s_meetings:"Reuniões agendadas", s_interested:"Respostas interessadas",
-    s_replied:"Responderam", s_outreach:"Em prospecção",
+    s_replied:"Responderam", s_outreach:"Enviados para uma campanha",
     ch_email:"E-mail", fn_sub:"Do contato pesquisado à reunião agendada",
     fn_sub_li:"Tem o aceite da conexão, degrau que o e-mail não tem",
     t_pace:"Ritmo semanal", sub_pace:"Novos contatos em prospecção e respostas por semana, nas últimas 8 semanas",
@@ -310,7 +319,7 @@ const I18N = {
     q_excluded:"contatos excluídos antes do envio",
     q_note:"Endereços inválidos são removidos antes do disparo para proteger a reputação do seu domínio. Os excluídos são perfis bloqueados, sem foto, ou com indício de que a pessoa trocou de empresa.",
     f_left:"Relatório gerado por PipeLabs", f_right:"Dúvidas? Fale com o seu ponto de contato.",
-    stages:{ researched:"Pesquisados", in_outreach:"Em prospecção", connected:"Conexões aceitas",
+    stages:{ researched:"Pesquisados", in_outreach:"Enviados para uma campanha", connected:"Conexões aceitas",
       replied:"Responderam", interested:"Interessados", meeting_booked:"Reuniões agendadas" },
     st:{ interested:"Interessado", meeting_booked:"Reunião agendada", no_show:"Não compareceu" },
     employees:"funcionários", people:n=>n+(n===1?" pessoa":" pessoas"),
@@ -319,6 +328,9 @@ const I18N = {
     emptyCamps:"Nenhuma campanha ativa no momento.",
     emptyNotes:"A primeira leitura mensal chega no fim deste mês.",
     capped:(n,t)=>"Mostrando os "+n+" mais recentes, de "+t+" no total.",
+    showing:(a,b)=>"Mostrando "+a+" de "+b, more:n=>"Ver mais "+n,
+    campNote:(a,b)=>"Esta tabela mostra apenas campanhas ativas (com fila ou envio recente) e cobre todo o histórico, não o filtro de datas acima."
+      + (a===b ? "" : " São "+a+" das "+b+" reuniões do histórico; as demais vieram de campanhas já encerradas."),
     promised:" · o que prometemos",
     copied:"Copiado: ", saved:"Status atualizado", failed:"Não foi possível atualizar",
     noEmail:"sem e-mail", noPhone:"sem telefone", openLi:"Abrir perfil no LinkedIn", noLinkedin:"sem LinkedIn",
@@ -331,7 +343,7 @@ const I18N = {
     title:n=>"Outreach for "+n, updated:"Updated", to:"to",
     p_month:"This month", p_30:"Last 30 days", p_all:"All time",
     s_meetings:"Meetings booked", s_interested:"Interested replies",
-    s_replied:"Replied", s_outreach:"In outreach",
+    s_replied:"Replied", s_outreach:"Sent to a campaign",
     ch_email:"Email", fn_sub:"From researched contact to booked meeting",
     fn_sub_li:"Includes the connection accept, a step email does not have",
     t_pace:"Weekly pace", sub_pace:"New contacts in outreach and replies per week, over the last 8 weeks",
@@ -345,7 +357,7 @@ const I18N = {
     q_excluded:"contacts excluded before sending",
     q_note:"Invalid addresses are removed before sending to protect your domain reputation. Excluded contacts are locked profiles, profiles with no photo, or people who appear to have changed company.",
     f_left:"Report generated by PipeLabs", f_right:"Questions? Talk to your point of contact.",
-    stages:{ researched:"Researched", in_outreach:"In outreach", connected:"Connections accepted",
+    stages:{ researched:"Researched", in_outreach:"Sent to a campaign", connected:"Connections accepted",
       replied:"Replied", interested:"Interested", meeting_booked:"Meetings booked" },
     st:{ interested:"Interested", meeting_booked:"Meeting booked", no_show:"No-show" },
     employees:"employees", people:n=>n+(n===1?" person":" people"),
@@ -354,6 +366,9 @@ const I18N = {
     emptyCamps:"No active campaigns right now.",
     emptyNotes:"The first monthly read arrives at the end of this month.",
     capped:(n,t)=>"Showing the "+n+" most recent, of "+t+" in total.",
+    showing:(a,b)=>"Showing "+a+" of "+b, more:n=>"Show "+n+" more",
+    campNote:(a,b)=>"This table lists only active campaigns (with a queue or recent sending) and covers the whole history, not the date filter above."
+      + (a===b ? "" : " That is "+a+" of the "+b+" meetings on record; the rest came from campaigns that have already finished."),
     promised:" · what we promised",
     copied:"Copied: ", saved:"Status updated", failed:"Could not update",
     noEmail:"no email", noPhone:"no phone", openLi:"Open LinkedIn profile", noLinkedin:"no LinkedIn",
@@ -366,7 +381,7 @@ const I18N = {
     title:n=>"Prospección para "+n, updated:"Actualizado", to:"hasta",
     p_month:"Este mes", p_30:"Últimos 30 días", p_all:"Todo",
     s_meetings:"Reuniones agendadas", s_interested:"Respuestas interesadas",
-    s_replied:"Respondieron", s_outreach:"En prospección",
+    s_replied:"Respondieron", s_outreach:"Enviados a una campaña",
     ch_email:"Correo", fn_sub:"Del contacto investigado a la reunión agendada",
     fn_sub_li:"Incluye la aceptación de conexión, un paso que el correo no tiene",
     t_pace:"Ritmo semanal", sub_pace:"Nuevos contactos en prospección y respuestas por semana, en las últimas 8 semanas",
@@ -380,7 +395,7 @@ const I18N = {
     q_excluded:"contactos excluidos antes del envío",
     q_note:"Las direcciones inválidas se eliminan antes del envío para proteger la reputación de su dominio. Los excluidos son perfiles bloqueados, sin foto, o con indicios de cambio de empresa.",
     f_left:"Informe generado por PipeLabs", f_right:"¿Dudas? Hable con su punto de contacto.",
-    stages:{ researched:"Investigados", in_outreach:"En prospección", connected:"Conexiones aceptadas",
+    stages:{ researched:"Investigados", in_outreach:"Enviados a una campaña", connected:"Conexiones aceptadas",
       replied:"Respondieron", interested:"Interesados", meeting_booked:"Reuniones agendadas" },
     st:{ interested:"Interesado", meeting_booked:"Reunión agendada", no_show:"No asistió" },
     employees:"empleados", people:n=>n+(n===1?" persona":" personas"),
@@ -389,6 +404,9 @@ const I18N = {
     emptyCamps:"Ninguna campaña activa por ahora.",
     emptyNotes:"La primera lectura mensual llega a fin de mes.",
     capped:(n,t)=>"Mostrando los "+n+" más recientes, de "+t+" en total.",
+    showing:(a,b)=>"Mostrando "+a+" de "+b, more:n=>"Ver "+n+" más",
+    campNote:(a,b)=>"Esta tabla muestra solo campañas activas (con cola o envío reciente) y cubre todo el historial, no el filtro de fechas de arriba."
+      + (a===b ? "" : " Son "+a+" de las "+b+" reuniones del historial; las demás vinieron de campañas ya finalizadas."),
     promised:" · lo que prometimos",
     copied:"Copiado: ", saved:"Estado actualizado", failed:"No se pudo actualizar",
     noEmail:"sin correo", noPhone:"sin teléfono", openLi:"Abrir perfil de LinkedIn", noLinkedin:"sin LinkedIn",
@@ -404,6 +422,11 @@ let D = null, L = I18N.pt;
 // agency credentials at all -- this only keeps the internal screen from offering a control that
 // would be refused, and stops a stray click during a call being written as the client's decision.
 let RO = false;
+
+// How many hand-raisers are rendered. PipeLabs already has 132 and the API returns up to 500 --
+// dumping all of them pushed everything below the list (campaigns, the monthly note) off the page.
+const PAGE_STEP = 10;
+let PAGE = PAGE_STEP;
 const BR = n => Number(n || 0).toLocaleString(L.locale);
 
 const EMAIL_STAGES = ["researched","in_outreach","replied","interested","meeting_booked"];
@@ -495,7 +518,8 @@ function leads(){
   const rows = (D.leads || []).filter(l => l.event_at && inRange(String(l.event_at).slice(0,10)));
   if (!rows.length){ $("leads").innerHTML = '<p class="empty">' + L.emptyLeads + '</p>'; return; }
 
-  $("leads").innerHTML = rows.map(l => {
+  const rest = Math.max(rows.length - PAGE, 0);
+  $("leads").innerHTML = rows.slice(0, PAGE).map(l => {
     const st = l.status;
     const moves = MOVES[st] || [];
     const control = (!RO && moves.length)
@@ -526,10 +550,18 @@ function leads(){
       '<span class="tag">' + new Date(l.event_at).toLocaleDateString(L.locale) + '</span>' +
       '</div></article>';
   }).join("") +
+    (rest
+      ? '<div class="moreRow"><button type="button" class="more" id="moreBtn">' +
+        L.more(Math.min(rest, PAGE_STEP)) + '</button>' +
+        '<span class="moreCount">' + L.showing(BR(Math.min(PAGE, rows.length)), BR(rows.length)) + '</span></div>'
+      : '') +
     // The API returns at most `leads_cap` hand-raisers. Say so rather than silently truncating.
     ((D.leads_total || 0) > (D.leads_cap || 0)
       ? '<p class="capnote">' + L.capped(BR(D.leads_cap), BR(D.leads_total)) + '</p>'
       : '');
+
+  const moreBtn = $("moreBtn");
+  if (moreBtn) moreBtn.onclick = () => { PAGE += PAGE_STEP; leads(); };
 
   document.querySelectorAll("[data-copy]").forEach(b => {
     b.onclick = () => {
@@ -575,6 +607,15 @@ function leads(){
 
 function camps(){
   const rows = D.campaigns || [];
+
+  // The block is "what's running now" (C11), so it is a SUBSET on purpose — and it is not date
+  // filtered. Left alone that reads as an error: the headline said 31 meetings while the table
+  // summed to 14, with the other 17 sitting in 40 campaigns the HAVING hides. Say it out loud
+  // instead. Both numbers here are all-time, matching the table's own scope.
+  const shown   = rows.reduce((s, c) => s + Number(c.meetings || 0), 0);
+  const allTime = Math.max(D.daily.reduce((s, x) => s + (x.e === "meeting_booked" ? x.n : 0), 0), shown);
+  $("campNote").textContent = L.campNote(BR(shown), BR(allTime));
+
   if (!rows.length){
     $("camps").innerHTML = '<tr><td colspan="6" class="empty">' + L.emptyCamps + '</td></tr>'; return;
   }
