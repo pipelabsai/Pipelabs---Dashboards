@@ -308,7 +308,7 @@ const I18N = {
     s_replied:"Responderam", s_outreach:"Enviados para uma campanha",
     ch_email:"E-mail", fn_sub:"Do contato pesquisado à reunião agendada",
     fn_sub_li:"Tem o aceite da conexão, degrau que o e-mail não tem",
-    t_pace:"Ritmo semanal", sub_pace:"Novos contatos em prospecção e respostas por semana, nas últimas 8 semanas",
+    t_pace:"Ritmo", sub_pace:"Novos contatos enviados para campanha e respostas ao longo do período escolhido",
     t_hands:"Quem levantou a mão",
     sub_hands:"Quem demonstrou interesse ou agendou reunião. Mudou alguma coisa? Atualize o status aqui.",
     t_running:"O que está rodando agora", sub_running:"Campanhas com contatos em prospecção ou atividade recente",
@@ -346,7 +346,7 @@ const I18N = {
     s_replied:"Replied", s_outreach:"Sent to a campaign",
     ch_email:"Email", fn_sub:"From researched contact to booked meeting",
     fn_sub_li:"Includes the connection accept, a step email does not have",
-    t_pace:"Weekly pace", sub_pace:"New contacts in outreach and replies per week, over the last 8 weeks",
+    t_pace:"Pace", sub_pace:"New contacts sent to a campaign, and replies, across the period you selected",
     t_hands:"Who raised their hand",
     sub_hands:"People who showed interest or booked a meeting. Something changed? Update the status here.",
     t_running:"What's running now", sub_running:"Campaigns with contacts in outreach or recent activity",
@@ -384,7 +384,7 @@ const I18N = {
     s_replied:"Respondieron", s_outreach:"Enviados a una campaña",
     ch_email:"Correo", fn_sub:"Del contacto investigado a la reunión agendada",
     fn_sub_li:"Incluye la aceptación de conexión, un paso que el correo no tiene",
-    t_pace:"Ritmo semanal", sub_pace:"Nuevos contactos en prospección y respuestas por semana, en las últimas 8 semanas",
+    t_pace:"Ritmo", sub_pace:"Nuevos contactos enviados a una campaña, y respuestas, en el período que eligió",
     t_hands:"Quién levantó la mano",
     sub_hands:"Personas que mostraron interés o agendaron reunión. ¿Cambió algo? Actualice el estado aquí.",
     t_running:"Qué está corriendo ahora", sub_running:"Campañas con contactos en prospección o actividad reciente",
@@ -459,20 +459,36 @@ function funnel(elId, ch, stages, color){
 }
 
 function weekly(){
-  const end = bounds().b ? new Date(bounds().b + "T00:00:00") : today();
+  // The chart now follows the date filter instead of always drawing the last 8 weeks. Bucket width
+  // adapts so the shape stays readable at any span: daily up to 3 weeks, then whole weeks, ~12
+  // buckets max. "All time" is clamped to the first real event -- otherwise the preset's year-2000
+  // start would give buckets two years wide.
+  const rng = bounds();
+  const firstEvent = D.daily.reduce((m, x) => (!m || x.d < m) ? x.d : m, null);
+  let a0 = rng.a || firstEvent || ymd(today());
+  if (firstEvent && a0 < firstEvent) a0 = firstEvent;
+  let b0 = rng.b || ymd(today());
+  if (b0 < a0) b0 = a0;
+
+  const lo0 = new Date(a0 + "T00:00:00"), hi0 = new Date(b0 + "T00:00:00");
+  const days = Math.max(Math.round((hi0 - lo0) / 86400000) + 1, 1);
+  const step = days <= 21 ? 1 : Math.max(Math.ceil(days / 12 / 7), 1) * 7;
+
   const buckets = [], labels = [];
-  for (let w = 7; w >= 0; w--){
-    const hi = new Date(end); hi.setDate(hi.getDate() - w*7);
-    const lo = new Date(hi);  lo.setDate(lo.getDate() - 6);
+  for (let s = 0; s < days; s += step){
+    const lo = new Date(lo0); lo.setDate(lo.getDate() + s);
+    const hi = new Date(lo);  hi.setDate(hi.getDate() + step - 1);
+    if (hi > hi0) hi.setTime(hi0.getTime());
     buckets.push([ymd(lo), ymd(hi)]);
-    labels.push(lo.getDate() + "/" + (lo.getMonth()+1));
+    labels.push(lo.getDate() + "/" + (lo.getMonth() + 1));
   }
+
   const series = evt => buckets.map(b =>
     D.daily.reduce((s,x) => s + ((x.e === evt && x.d >= b[0] && x.d <= b[1]) ? x.n : 0), 0));
   const a = series("in_outreach"), r = series("replied");
   const W=900,H=250,Lm=46,Rm=12,Tm=16,Bm=38;
   const max = Math.max(...a, ...r, 1) * 1.15;
-  const X = i => Lm + i*((W-Lm-Rm)/(a.length-1));
+  const X = i => a.length < 2 ? Lm + (W-Lm-Rm)/2 : Lm + i*((W-Lm-Rm)/(a.length-1));
   const Y = v => H-Bm - (v/max)*(H-Tm-Bm);
   const line = arr => arr.map((v,i) => (i?"L":"M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
   let g = "";
@@ -481,7 +497,9 @@ function weekly(){
     g += '<line x1="'+Lm+'" y1="'+gy+'" x2="'+(W-Rm)+'" y2="'+gy+'" stroke="var(--lineSoft)" stroke-width="1"/>' +
          '<text x="'+(Lm-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+BR(val)+'</text>';
   }
-  const lbl = labels.map((t,i) =>
+  // With daily buckets the axis can hold 21 labels; print every other one so they do not collide.
+  const skip = labels.length > 12 ? 2 : 1;
+  const lbl = labels.map((t,i) => (i % skip) ? '' :
     '<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+t+'</text>').join("");
   $("chart").innerHTML = g + lbl +
     '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#3464FB" opacity=".10"/>' +
