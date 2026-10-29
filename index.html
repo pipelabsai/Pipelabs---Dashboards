@@ -8,6 +8,7 @@
      URL in the Referer header of the cross-origin font request below. -->
 <meta name="referrer" content="no-referrer">
 <title>PipeLabs · Report</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2031.2%2030.31%22%3E%3Crect%20fill%3D%22rgb(47%2C89%2C236)%22%20width%3D%2231.2%22%20height%3D%2230.31%22%20rx%3D%224.61%22%20ry%3D%224.61%22%2F%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M15.51%2C7.13c-1.13-1.16-2.72-1.74-4.34-1.74h-6.26v19.6h3.12s.06-8.25-.01-8.17h3.77c1.26%2C0%2C2.52-.39%2C3.49-1.2.96-.82%2C1.83-2.15%2C1.83-4.33%2C0-1.93-.73-3.26-1.6-4.16ZM13.92%2C11.11c-.03%2C1.46-1.3%2C2.59-2.75%2C2.59h-3.05v-5.64h3.32c1.05%2C0%2C2.48.78%2C2.48%2C2.99v.06Z%22%2F%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M16.85%2C15.88s-.97%2C1.36-2.93%2C1.8v7.38h11.21v-3.22h-8.28s-.06-5.96%2C0-5.96Z%22%2F%3E%3C%2Fsvg%3E">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
 <!--
   PipeLabs client report -- static shell. Contains NO client data.
@@ -49,9 +50,7 @@ body{margin:0;background:var(--page);color:var(--body);font-family:'Satoshi',ui-
 @media(min-width:900px){.bandIn{padding:32px 40px 38px}}
 .brandrow{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .lockup{display:flex;align-items:center;gap:10px}
-.mark{width:34px;height:34px;border-radius:9px;background:#fff;color:#00003F;display:grid;place-items:center;
- font-weight:700;font-size:15px;letter-spacing:-.02em}
-.wordmark{font-weight:700;font-size:19px;letter-spacing:-.02em}
+.logo{display:block;height:30px;width:auto}
 .upd{font-size:12px;color:rgba(255,255,255,.62);font-weight:500}
 h1{margin:22px 0 18px;font-size:27px;font-weight:700;letter-spacing:-.025em;color:#fff;text-wrap:balance}
 @media(min-width:900px){h1{font-size:32px}}
@@ -118,6 +117,8 @@ h2 svg{width:17px;height:17px;flex:none}
 .stCal{color:var(--brand);background:var(--brand50)}
 .stOk{color:var(--ok);background:var(--okbg)}
 .stNo{color:var(--warn);background:var(--warnbg)}
+.stWon{color:#fff;background:var(--ok)}
+.stLost{color:var(--muted);background:var(--alt)}
 .tw{overflow-x:auto;margin:0 -20px;padding:0 20px}
 table{border-collapse:collapse;width:100%;min-width:640px}
 th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
@@ -151,8 +152,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
  border-bottom:1px solid rgba(255,255,255,.14)}
 .abarIn{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 @media(min-width:900px){.abarIn{padding:12px 40px}}
-#abar .mark{width:26px;height:26px;border-radius:7px;font-size:12px}
-#abar .wordmark{font-size:15px}
+#abar .logo{height:22px}
 .apk{display:flex;align-items:center;gap:9px;margin-left:auto}
 .apk>span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6)}
 #apick{font:700 13px 'Satoshi',sans-serif;color:#00003F;background:#fff;border:0;border-radius:9px;
@@ -179,9 +179,10 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="pl-logo" viewBox="0 0 110.19 30.31"><rect fill="#2f59ec" width="31.2" height="30.31" rx="4.61" ry="4.61"/><path fill="#fff" d="M35.95,18.75V5.86h4.86c.86,0,1.51.04,1.96.12.63.11,1.16.31,1.59.6s.77.71,1.03,1.24.39,1.12.39,1.76c0,1.1-.35,2.02-1.05,2.78s-1.96,1.14-3.78,1.14h-3.3v5.24h-1.71ZM37.66,11.99h3.33c1.1,0,1.88-.21,2.35-.62s.69-.99.69-1.73c0-.54-.14-1-.41-1.38s-.63-.64-1.08-.76c-.29-.08-.82-.11-1.59-.11h-3.3v4.61Z"/><path fill="#fff" d="M47.95,7.68v-1.82h1.58v1.82h-1.58ZM47.95,18.75v-9.33h1.58v9.33h-1.58Z"/><path fill="#fff" d="M52.12,22.32v-12.91h1.44v1.21c.34-.47.72-.83,1.15-1.07s.95-.36,1.56-.36c.8,0,1.5.21,2.11.62s1.07.99,1.38,1.74.47,1.57.47,2.46c0,.96-.17,1.81-.51,2.58-.34.76-.84,1.35-1.49,1.76s-1.34.61-2.06.61c-.53,0-1-.11-1.42-.33s-.76-.5-1.03-.84v4.54h-1.58ZM53.55,14.13c0,1.2.24,2.09.73,2.66s1.08.86,1.77.86,1.3-.3,1.81-.89c.5-.59.75-1.52.75-2.76s-.25-2.08-.73-2.67c-.49-.59-1.07-.89-1.75-.89s-1.27.31-1.79.94-.78,1.55-.78,2.75Z"/><path fill="#fff" d="M68.7,15.74l1.63.2c-.26.96-.74,1.7-1.43,2.22s-1.59.79-2.67.79c-1.37,0-2.45-.42-3.25-1.26-.8-.84-1.2-2.02-1.2-3.54s.4-2.79,1.21-3.66,1.86-1.3,3.15-1.3,2.27.42,3.06,1.27,1.19,2.04,1.19,3.59c0,.09,0,.23,0,.42h-6.96c.06,1.03.35,1.81.87,2.36s1.17.82,1.95.82c.58,0,1.08-.15,1.49-.46s.74-.79.98-1.46ZM63.5,13.18h5.21c-.07-.79-.27-1.37-.6-1.77-.5-.61-1.16-.91-1.96-.91-.73,0-1.34.24-1.83.73s-.77,1.14-.82,1.95Z"/><path fill="#fff" d="M72.63,18.75V5.86h1.71v11.36h6.35v1.52h-8.05Z"/><path fill="#fff" d="M88.78,17.59c-.59.5-1.15.85-1.69,1.05-.54.21-1.12.31-1.75.31-1.03,0-1.81-.25-2.36-.75s-.83-1.14-.83-1.92c0-.46.1-.88.31-1.25.21-.38.48-.68.82-.91s.72-.4,1.14-.52c.31-.08.78-.16,1.41-.24,1.28-.15,2.22-.33,2.82-.54,0-.22,0-.35,0-.41,0-.64-.15-1.1-.45-1.36-.4-.36-1-.54-1.8-.54-.74,0-1.29.13-1.65.39s-.62.72-.79,1.38l-1.55-.21c.14-.66.37-1.2.69-1.6s.79-.72,1.4-.94,1.32-.33,2.12-.33,1.44.09,1.94.28.86.42,1.1.71.4.64.49,1.08c.05.27.08.76.08,1.46v2.11c0,1.47.03,2.4.1,2.79s.2.76.4,1.12h-1.65c-.16-.33-.27-.71-.32-1.15ZM88.65,14.06c-.57.23-1.44.43-2.58.6-.65.09-1.11.2-1.38.32s-.48.29-.62.51-.22.48-.22.75c0,.42.16.77.48,1.05s.79.42,1.4.42,1.15-.13,1.63-.4.82-.63,1.05-1.09c.17-.36.25-.89.25-1.58v-.58Z"/><path fill="#fff" d="M94.34,18.75h-1.47V5.86h1.58v4.6c.67-.84,1.52-1.26,2.56-1.26.57,0,1.12.12,1.63.35s.93.56,1.27.98.59.92.78,1.52.28,1.22.28,1.9c0,1.6-.4,2.84-1.19,3.71s-1.74,1.31-2.85,1.31-1.97-.46-2.59-1.38v1.17ZM94.32,14.01c0,1.12.15,1.93.46,2.43.5.81,1.17,1.22,2.02,1.22.69,0,1.29-.3,1.79-.9s.76-1.5.76-2.69-.24-2.12-.73-2.7c-.48-.58-1.07-.87-1.75-.87s-1.29.3-1.79.9-.76,1.47-.76,2.61Z"/><path fill="#fff" d="M102.44,15.96l1.56-.25c.09.63.33,1.11.73,1.44s.96.5,1.68.5,1.27-.15,1.62-.44.53-.64.53-1.04c0-.36-.16-.64-.47-.84-.22-.14-.76-.32-1.62-.54-1.16-.29-1.96-.55-2.41-.76-.45-.21-.79-.51-1.02-.89s-.35-.8-.35-1.25c0-.42.09-.8.29-1.16.19-.35.45-.65.78-.88.25-.18.58-.34,1.01-.46s.88-.19,1.37-.19c.73,0,1.38.11,1.93.32.55.21.96.5,1.23.86s.45.84.54,1.45l-1.55.21c-.07-.48-.27-.86-.61-1.12-.34-.27-.81-.4-1.43-.4-.73,0-1.25.12-1.56.36s-.47.52-.47.84c0,.21.06.39.19.55.13.17.33.31.61.42.16.06.62.19,1.4.4,1.12.3,1.9.54,2.34.73.44.19.79.47,1.04.83s.38.81.38,1.35-.15,1.02-.46,1.49c-.31.47-.75.83-1.33,1.08s-1.24.38-1.97.38c-1.21,0-2.14-.25-2.77-.76-.64-.5-1.04-1.25-1.22-2.24Z"/><line fill="none" stroke="#fff" stroke-opacity=".55" stroke-miterlimit="10" x1="35.95" y1="23.42" x2="75.87" y2="23.42"/><path fill="#fff" d="M15.51,7.13c-1.13-1.16-2.72-1.74-4.34-1.74h-6.26v19.6h3.12s.06-8.25-.01-8.17h3.77c1.26,0,2.52-.39,3.49-1.2.96-.82,1.83-2.15,1.83-4.33,0-1.93-.73-3.26-1.6-4.16ZM13.92,11.11c-.03,1.46-1.3,2.59-2.75,2.59h-3.05v-5.64h3.32c1.05,0,2.48.78,2.48,2.99v.06Z"/><path fill="#fff" d="M16.85,15.88s-.97,1.36-2.93,1.8v7.38h11.21v-3.22h-8.28s-.06-5.96,0-5.96Z"/></symbol></svg>
 
 <div id="abar"><div class="abarIn">
- <div class="lockup"><div class="mark">PL</div><div class="wordmark">PipeLabs</div></div>
+ <div class="lockup"><svg class="logo" viewBox="0 0 110.19 30.31" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
  <label class="apk"><span>Cliente</span>
   <select id="apick" aria-label="Escolher cliente"></select></label>
  <span class="aro">Somente leitura</span>
@@ -202,7 +203,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 <div id="app">
 <header class="band"><div class="bandIn">
  <div class="brandrow">
-  <div class="lockup"><div class="mark">PL</div><div class="wordmark">PipeLabs</div></div>
+  <div class="lockup"><svg class="logo" viewBox="0 0 110.19 30.31" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
   <div class="upd" id="upd"></div>
  </div>
  <h1 id="title"></h1>
@@ -257,7 +258,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 <div id="agency" style="display:none">
 <header class="band"><div class="bandIn">
  <div class="brandrow">
-  <div class="lockup"><div class="mark">PL</div><div class="wordmark">PipeLabs</div></div>
+  <div class="lockup"><svg class="logo" viewBox="0 0 110.19 30.31" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
   <div class="upd" id="a-upd"></div>
  </div>
  <h1>Painel da agência</h1>
@@ -329,7 +330,10 @@ const I18N = {
     f_left:"Relatório gerado por PipeLabs", f_right:"Dúvidas? Fale com o seu ponto de contato.",
     stages:{ researched:"Pesquisados", in_outreach:"Enviados para uma campanha", connected:"Conexões aceitas",
       replied:"Responderam", interested:"Interessados", meeting_booked:"Reuniões agendadas" },
-    st:{ interested:"Interessado", meeting_booked:"Reunião agendada", no_show:"Não compareceu" },
+    st:{ interested:"Interessado", meeting_booked:"Reunião agendada", no_show:"Não compareceu",
+         won:"Cliente ganho", lost:"Cliente perdido", meeting_completed:"Reunião realizada",
+         not_interested:"Sem interesse", wrong_person:"Pessoa errada", out_of_office:"Fora do escritório",
+         other:"Outro", unsubscribed:"Descadastrado" },
     employees:"funcionários", people:n=>n+(n===1?" pessoa":" pessoas"),
     emptyPeriod:"Nada neste período ainda.",
     emptyLeads:"Ninguém levantou a mão neste período ainda.",
@@ -369,7 +373,10 @@ const I18N = {
     f_left:"Report generated by PipeLabs", f_right:"Questions? Talk to your point of contact.",
     stages:{ researched:"Researched", in_outreach:"Sent to a campaign", connected:"Connections accepted",
       replied:"Replied", interested:"Interested", meeting_booked:"Meetings booked" },
-    st:{ interested:"Interested", meeting_booked:"Meeting booked", no_show:"No-show" },
+    st:{ interested:"Interested", meeting_booked:"Meeting booked", no_show:"No-show",
+         won:"Closed won", lost:"Closed lost", meeting_completed:"Meeting held",
+         not_interested:"Not interested", wrong_person:"Wrong person", out_of_office:"Out of office",
+         other:"Other", unsubscribed:"Unsubscribed" },
     employees:"employees", people:n=>n+(n===1?" person":" people"),
     emptyPeriod:"Nothing in this period yet.",
     emptyLeads:"Nobody has raised their hand in this period yet.",
@@ -409,7 +416,10 @@ const I18N = {
     f_left:"Informe generado por PipeLabs", f_right:"¿Dudas? Hable con su punto de contacto.",
     stages:{ researched:"Investigados", in_outreach:"Enviados a una campaña", connected:"Conexiones aceptadas",
       replied:"Respondieron", interested:"Interesados", meeting_booked:"Reuniones agendadas" },
-    st:{ interested:"Interesado", meeting_booked:"Reunión agendada", no_show:"No asistió" },
+    st:{ interested:"Interesado", meeting_booked:"Reunión agendada", no_show:"No asistió",
+         won:"Cliente ganado", lost:"Cliente perdido", meeting_completed:"Reunión realizada",
+         not_interested:"Sin interés", wrong_person:"Persona equivocada", out_of_office:"Fuera de la oficina",
+         other:"Otro", unsubscribed:"Baja solicitada" },
     employees:"empleados", people:n=>n+(n===1?" persona":" personas"),
     emptyPeriod:"Nada en este período todavía.",
     emptyLeads:"Nadie ha levantado la mano en este período todavía.",
@@ -529,13 +539,17 @@ const IC = {
  li:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>'
 };
 
-// The three client-visible stages are freely interchangeable, and nothing else is reachable.
-// Anything the pipeline owns (sent, connected, bad_email, meeting_completed, won) is untouchable.
-// None of these writes best_rank -- see set_lead_stage_from_dashboard -- and every move is appended
-// to personalization.stage_history, so flipping back and forth loses nothing.
-const STAGES = ["interested","meeting_booked","no_show"];
+// The five client-visible stages are freely interchangeable, and nothing else is reachable as a
+// destination. A lead sitting in any other status (meeting_completed from Instantly, not_interested,
+// other) can still be moved INTO one of the five -- that is how a held meeting becomes won or lost.
+// LOCKED mirrors set_lead_stage_from_dashboard: delivery facts and opt-outs are never re-graded.
+// Every move is appended to personalization.stage_history, so flipping back and forth loses nothing.
+// A lead lost FROM a meeting stage still counts as a meeting (migration 0017).
+const STAGES = ["interested","meeting_booked","no_show","won","lost"];
+const LOCKED = new Set(["queued","bad_email","bounced","unsubscribed"]);
 const MOVES = Object.fromEntries(STAGES.map(s => [s, STAGES.filter(o => o !== s)]));
-const STCLASS = { interested:"stOk", meeting_booked:"stCal", no_show:"stNo" };
+const STCLASS = { interested:"stOk", meeting_booked:"stCal", meeting_completed:"stCal", no_show:"stNo",
+                  won:"stWon", lost:"stLost" };
 
 // 96% of contacts store linkedin_url without a scheme ("linkedin.com/in/x"). A bare href like
 // that is a RELATIVE path, so the browser navigated inside this site and hit a 404 instead of
@@ -649,9 +663,9 @@ function leads(){
   const rest = Math.max(rows.length - PAGE, 0);
   $("leads").innerHTML = rows.slice(0, PAGE).map(l => {
     const st = l.status;
-    const moves = MOVES[st] || [];
+    const moves = MOVES[st] || (LOCKED.has(st) ? [] : STAGES);
     const control = (!RO && moves.length)
-      ? '<select class="status ' + STCLASS[st] + '" data-id="' + esc(l.outreach_id) + '" data-cur="' + esc(st) + '">' +
+      ? '<select class="status ' + (STCLASS[st] || "") + '" data-id="' + esc(l.outreach_id) + '" data-cur="' + esc(st) + '">' +
         '<option value="' + st + '" selected>' + L.st[st] + '</option>' +
         moves.map(m => '<option value="' + m + '">' + L.st[m] + '</option>').join("") + '</select>'
       : '<span class="tag ' + (STCLASS[st] || "") + '">' + (L.st[st] || st) + '</span>';
