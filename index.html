@@ -133,6 +133,28 @@ td.nm{font-weight:700;color:var(--heading);min-width:260px}
 .note p:first-child{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);margin:0 0 5px}
 .note+.note p:first-child{color:var(--muted)}
 .note p:last-child{margin:0;font-size:13.5px;white-space:pre-line}
+/* A note written in sections (an UPPERCASE line opens one, "•" lines are its list) renders as panels */
+.note.rich{border-left:0;padding-left:0}
+.note.rich>p:first-child{margin-bottom:12px}
+.nsecs{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:900px){.nsecs{grid-template-columns:repeat(2,minmax(0,1fr))}.nsec:first-child{grid-column:1/-1}}
+.nsec{background:var(--alt);border-radius:12px;padding:16px 18px;min-width:0}
+.nsec:first-child{background:var(--brand50)}
+.nsec h3{margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand)}
+.nsec ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.nsec li{position:relative;padding-left:17px;font-size:13.5px;line-height:1.5}
+.nsec li::before{content:"";position:absolute;left:2px;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--brand)}
+.nsec p{margin:0 0 10px;font-size:13.5px}
+.nsec strong{color:var(--heading);font-weight:700}
+.ntiles{display:grid;gap:10px;margin-bottom:14px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:900px){.ntiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.ntile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.ntile i{display:block;font-style:normal;font-size:28px;font-weight:900;letter-spacing:-.03em;line-height:1.1;
+ color:var(--heading);font-variant-numeric:tabular-nums}
+.ntile:first-child i{color:var(--brand)}
+.ntile span{display:block;font-size:12.5px;line-height:1.4;margin-top:4px}
+.ndir{margin:0 0 12px;padding:11px 13px;border-radius:10px;background:var(--card);border:1px solid var(--line);
+ border-left:3px solid var(--brand);font-size:13.5px;color:var(--heading);font-weight:500}
 .quiet{background:transparent;border:1px dashed var(--line);box-shadow:none}
 .qrow{display:flex;gap:28px;flex-wrap:wrap;align-items:baseline}
 .qn{font-size:19px;font-weight:900;color:var(--body);font-variant-numeric:tabular-nums}
@@ -773,9 +795,38 @@ function camps(){
 function notes(){
   const rows = D.notes || [];
   if (!rows.length){ $("notes").innerHTML = '<p class="empty">' + L.emptyNotes + '</p>'; return; }
-  $("notes").innerHTML = rows.map((n,i) =>
-    '<div class="note"><p>' + esc(n.period) + (i ? L.promised : "") + '</p><p>' + esc(n.body) + '</p></div>'
-  ).join("");
+  $("notes").innerHTML = rows.map((n,i) => {
+    const secs = noteSections(n.body || "");
+    const head = '<p>' + esc(n.period) + (i ? L.promised : "") + '</p>';
+    return secs ? '<div class="note rich">' + head + secs + '</div>'
+                : '<div class="note">' + head + '<p>' + esc(n.body) + '</p></div>';
+  }).join("");
+}
+
+// Body convention, written by the weekly report skill: an UPPERCASE line opens a section,
+// "•" lines are its items, "**x**" is bold, an item that starts with a bold number is a figure
+// tile, and "Direction:" is the callout. A body without an UPPERCASE line stays plain text.
+function noteSections(body){
+  const inl = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  const secs = []; let cur = null;
+  for (const raw of body.split("\n")){
+    const t = raw.trim(); if (!t) continue;
+    if (t.length < 48 && /^[A-ZÀ-Ý][A-ZÀ-Ý0-9 &'’\/-]+$/.test(t)){ cur = {title:t, tiles:[], items:[], text:[], dir:""}; secs.push(cur); continue; }
+    if (!cur) return null;
+    const item = t.match(/^[•\-]\s*(.+)$/), dir = t.match(/^(?:Direction|Direção|Dirección):\s*(.+)$/i);
+    if (item){
+      const tile = item[1].match(/^\*\*([0-9][0-9.,%]*)\*\*\s*(.+)$/);
+      if (tile) cur.tiles.push(tile); else cur.items.push(item[1]);
+    } else if (dir) cur.dir = dir[1];
+    else cur.text.push(t);
+  }
+  if (!secs.length) return null;
+  return '<div class="nsecs">' + secs.map(s => '<div class="nsec"><h3>' + esc(s.title) + '</h3>'
+    + (s.tiles.length ? '<div class="ntiles">' + s.tiles.map(m => '<div class="ntile"><i>' + esc(m[1]) + '</i><span>' + inl(m[2]) + '</span></div>').join("") + '</div>' : "")
+    + (s.dir ? '<p class="ndir">' + inl(s.dir) + '</p>' : "")
+    + s.text.map(x => '<p>' + inl(x) + '</p>').join("")
+    + (s.items.length ? '<ul>' + s.items.map(x => '<li>' + inl(x) + '</li>').join("") + '</ul>' : "")
+    + '</div>').join("") + '</div>';
 }
 
 function headline(){
