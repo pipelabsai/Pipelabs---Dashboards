@@ -807,7 +807,7 @@ function noteSections(body){
     if (!cur) return null;
     const item = t.match(/^[•\-]\s*(.+)$/), dir = t.match(/^(?:Direction|Direção|Dirección):\s*(.+)$/i);
     if (item) cur.items.push(item[1]);
-    else if (dir) cur.dir = dir[1];
+    else if (dir) cur.dir = dir[1].charAt(0).toUpperCase() + dir[1].slice(1);
     else cur.text.push(t);
   }
   if (!secs.length) return null;
