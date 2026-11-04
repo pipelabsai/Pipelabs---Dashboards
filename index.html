@@ -8,8 +8,9 @@
      URL in the Referer header of the cross-origin font request below. -->
 <meta name="referrer" content="no-referrer">
 <title>PipeLabs · Report</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2031.2%2030.31%22%3E%3Crect%20fill%3D%22rgb(47%2C89%2C236)%22%20width%3D%2231.2%22%20height%3D%2230.31%22%20rx%3D%224.61%22%20ry%3D%224.61%22%2F%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M15.51%2C7.13c-1.13-1.16-2.72-1.74-4.34-1.74h-6.26v19.6h3.12s.06-8.25-.01-8.17h3.77c1.26%2C0%2C2.52-.39%2C3.49-1.2.96-.82%2C1.83-2.15%2C1.83-4.33%2C0-1.93-.73-3.26-1.6-4.16ZM13.92%2C11.11c-.03%2C1.46-1.3%2C2.59-2.75%2C2.59h-3.05v-5.64h3.32c1.05%2C0%2C2.48.78%2C2.48%2C2.99v.06Z%22%2F%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M16.85%2C15.88s-.97%2C1.36-2.93%2C1.8v7.38h11.21v-3.22h-8.28s-.06-5.96%2C0-5.96Z%22%2F%3E%3C%2Fsvg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%20width%3D%22512%22%20height%3D%22512%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2215%22%20fill%3D%22%23070340%22/%3E%3Cg%20transform%3D%22translate%2810%2C15%29%20scale%281%29%20translate%28-10%2C-15%29%22%3E%3Crect%20x%3D%2210%22%20y%3D%2215%22%20width%3D%2244%22%20height%3D%228%22%20rx%3D%224%22%20fill%3D%22%23F8F8FA%22/%3E%3Crect%20x%3D%2217%22%20y%3D%2228%22%20width%3D%2230%22%20height%3D%228%22%20rx%3D%224%22%20fill%3D%22%23F8F8FA%22/%3E%3Crect%20x%3D%2224%22%20y%3D%2241%22%20width%3D%2216%22%20height%3D%228%22%20rx%3D%224%22%20fill%3D%22%232EE6F5%22/%3E%3C/g%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap">
 <!--
   PipeLabs client report -- static shell. Contains NO client data.
 
@@ -22,19 +23,19 @@
 -->
 <style>
 :root{
- --brand:#3464FB; --brand50:#EBF0FE; --cyan:#34DFFA;
+ --brand:#2F5BFF; --brand50:#EBF0FE; --cyan:#2EE6F5;
  --page:#F5F7FA; --card:#fff; --line:#E2E5EB; --lineSoft:#F0F1F4;
- --heading:#00003F; --body:#4D4D79; --muted:#8080A0; --alt:#EDEFF6;
+ --heading:#070340; --body:#4D4D79; --muted:#8080A0; --alt:#EDEFF6;
  --ok:#0A7B4F; --okbg:#ECFDF5; --warn:#B45309; --warnbg:#FEF3C7;
  --shadow:0 1px 2px rgba(0,0,63,.05);
- --band:linear-gradient(160deg,#00003F 0%,#152864 100%);
+ --band:linear-gradient(110deg,#140C7C 0%,#0A0558 45%,#070340 100%);
 }
 @media (prefers-color-scheme:dark){:root{
  --page:#05052B; --card:#0D0D42; --line:#26264F; --lineSoft:#1C1C48;
  --heading:#F2F4FF; --body:#B3B3C7; --alt:#14143F; --brand50:#141C4A;
  --ok:#4ADE9E; --okbg:#052E20; --warn:#FCD34D; --warnbg:#3A2A08;
  --shadow:0 2px 4px rgba(0,0,0,.25);
- --band:linear-gradient(160deg,#0D0D42 0%,#1F3C97 100%);}}
+ --band:linear-gradient(110deg,#140C7C 0%,#0A0558 45%,#070340 100%);}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--body);font-family:'Satoshi',ui-sans-serif,system-ui,sans-serif;
  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -42,23 +43,23 @@ body{margin:0;background:var(--page);color:var(--body);font-family:'Satoshi',ui-
 @media(min-width:900px){.wrap{padding:0 40px 72px}}
 .band{position:relative;overflow:hidden;background:var(--band);color:#fff}
 .band::before{content:"";position:absolute;inset:0;pointer-events:none;
- background-image:radial-gradient(rgba(255,255,255,.16) 1px,transparent 1px);background-size:24px 24px;opacity:.35}
+ background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:24px 24px;opacity:.18}
 .band::after{content:"";position:absolute;inset:0;pointer-events:none;
- background:radial-gradient(ellipse 70% 60% at 18% 0%,rgba(52,100,251,.45) 0%,transparent 70%),
- radial-gradient(ellipse 55% 55% at 92% 100%,rgba(52,223,250,.22) 0%,transparent 72%)}
+ background:radial-gradient(ellipse 70% 60% at 18% 0%,rgba(47,91,255,.28) 0%,transparent 70%),
+ radial-gradient(ellipse 55% 55% at 92% 100%,rgba(46,230,245,.10) 0%,transparent 72%)}
 .bandIn{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:26px 20px 30px}
 @media(min-width:900px){.bandIn{padding:32px 40px 38px}}
 .brandrow{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .lockup{display:flex;align-items:center;gap:10px}
 .logo{display:block;height:30px;width:auto}
 .upd{font-size:12px;color:rgba(255,255,255,.62);font-weight:500}
-h1{margin:22px 0 18px;font-size:27px;font-weight:700;letter-spacing:-.025em;color:#fff;text-wrap:balance}
+h1{margin:22px 0 18px;font-family:'Plus Jakarta Sans',Arial,sans-serif;font-size:27px;font-weight:800;letter-spacing:-.025em;color:#fff;text-wrap:balance}
 @media(min-width:900px){h1{font-size:32px}}
 .dates{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .chip{cursor:pointer;font:700 13px 'Satoshi',sans-serif;color:rgba(255,255,255,.8);
  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px}
 .chip:hover{background:rgba(255,255,255,.14);color:#fff}
-.chip[aria-pressed="true"]{background:#fff;color:#00003F;border-color:#fff}
+.chip[aria-pressed="true"]{background:#fff;color:#070340;border-color:#fff}
 .chip:focus-visible,.dt:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .range{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);
  border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:4px 13px;flex-wrap:wrap}
@@ -67,7 +68,7 @@ h1{margin:22px 0 18px;font-size:27px;font-weight:700;letter-spacing:-.025em;colo
 .stats{display:grid;gap:14px;margin-top:26px;grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(min-width:880px){.stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}}
 .stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:16px}
-.stat.hero{background:rgba(255,255,255,.11);border-color:rgba(52,223,250,.45)}
+.stat.hero{background:rgba(255,255,255,.11);border-color:rgba(46,230,245,.45)}
 .stat b{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
  color:rgba(255,255,255,.62);display:block;margin-bottom:6px;min-height:2.3em}
 .stat.hero b{color:var(--cyan)}
@@ -89,6 +90,9 @@ h2 svg{width:17px;height:17px;flex:none}
 .track{grid-column:1/-1;height:9px;border-radius:5px;background:var(--alt);overflow:hidden}
 .fill{height:100%;border-radius:5px}
 .leads{display:flex;flex-direction:column;gap:12px}
+.leadq{width:100%;box-sizing:border-box;margin:4px 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;
+  font:500 14px 'Satoshi',sans-serif;color:inherit;background:transparent;outline:none}
+.leadq:focus{border-color:var(--brand)}
 .lead{border:1px solid var(--line);border-radius:12px;padding:15px 16px}
 .ltop{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start}
 .lname{font-size:15px;font-weight:700;color:var(--heading)}
@@ -155,21 +159,21 @@ td.nm{font-weight:700;color:var(--heading);min-width:260px}
 .empty{font-size:13.5px;color:var(--muted);padding:6px 0}
 footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display:flex;
  justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);background:#00003F;
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);background:#070340;
  color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;
  transition:opacity .18s,transform .18s;z-index:50;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 /* Internal agency bar. Only ever shown behind the agency token + password, and it stays
    pinned while a client's own report is displayed below it, so nobody mistakes the internal
    view for the client's. */
-#abar{display:none;position:sticky;top:0;z-index:40;background:#00003F;color:#fff;
+#abar{display:none;position:sticky;top:0;z-index:40;background:#070340;color:#fff;
  border-bottom:1px solid rgba(255,255,255,.14)}
 .abarIn{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 @media(min-width:900px){.abarIn{padding:12px 40px}}
 #abar .logo{height:22px}
 .apk{display:flex;align-items:center;gap:9px;margin-left:auto}
 .apk>span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6)}
-#apick{font:700 13px 'Satoshi',sans-serif;color:#00003F;background:#fff;border:0;border-radius:9px;
+#apick{font:700 13px 'Satoshi',sans-serif;color:#070340;background:#fff;border:0;border-radius:9px;
  padding:8px 12px;cursor:pointer;max-width:58vw}
 #apick:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .aro{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.24);
@@ -193,10 +197,10 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="pl-logo" viewBox="0 0 110.19 30.31"><rect fill="#2f59ec" width="31.2" height="30.31" rx="4.61" ry="4.61"/><path fill="#fff" d="M35.95,18.75V5.86h4.86c.86,0,1.51.04,1.96.12.63.11,1.16.31,1.59.6s.77.71,1.03,1.24.39,1.12.39,1.76c0,1.1-.35,2.02-1.05,2.78s-1.96,1.14-3.78,1.14h-3.3v5.24h-1.71ZM37.66,11.99h3.33c1.1,0,1.88-.21,2.35-.62s.69-.99.69-1.73c0-.54-.14-1-.41-1.38s-.63-.64-1.08-.76c-.29-.08-.82-.11-1.59-.11h-3.3v4.61Z"/><path fill="#fff" d="M47.95,7.68v-1.82h1.58v1.82h-1.58ZM47.95,18.75v-9.33h1.58v9.33h-1.58Z"/><path fill="#fff" d="M52.12,22.32v-12.91h1.44v1.21c.34-.47.72-.83,1.15-1.07s.95-.36,1.56-.36c.8,0,1.5.21,2.11.62s1.07.99,1.38,1.74.47,1.57.47,2.46c0,.96-.17,1.81-.51,2.58-.34.76-.84,1.35-1.49,1.76s-1.34.61-2.06.61c-.53,0-1-.11-1.42-.33s-.76-.5-1.03-.84v4.54h-1.58ZM53.55,14.13c0,1.2.24,2.09.73,2.66s1.08.86,1.77.86,1.3-.3,1.81-.89c.5-.59.75-1.52.75-2.76s-.25-2.08-.73-2.67c-.49-.59-1.07-.89-1.75-.89s-1.27.31-1.79.94-.78,1.55-.78,2.75Z"/><path fill="#fff" d="M68.7,15.74l1.63.2c-.26.96-.74,1.7-1.43,2.22s-1.59.79-2.67.79c-1.37,0-2.45-.42-3.25-1.26-.8-.84-1.2-2.02-1.2-3.54s.4-2.79,1.21-3.66,1.86-1.3,3.15-1.3,2.27.42,3.06,1.27,1.19,2.04,1.19,3.59c0,.09,0,.23,0,.42h-6.96c.06,1.03.35,1.81.87,2.36s1.17.82,1.95.82c.58,0,1.08-.15,1.49-.46s.74-.79.98-1.46ZM63.5,13.18h5.21c-.07-.79-.27-1.37-.6-1.77-.5-.61-1.16-.91-1.96-.91-.73,0-1.34.24-1.83.73s-.77,1.14-.82,1.95Z"/><path fill="#fff" d="M72.63,18.75V5.86h1.71v11.36h6.35v1.52h-8.05Z"/><path fill="#fff" d="M88.78,17.59c-.59.5-1.15.85-1.69,1.05-.54.21-1.12.31-1.75.31-1.03,0-1.81-.25-2.36-.75s-.83-1.14-.83-1.92c0-.46.1-.88.31-1.25.21-.38.48-.68.82-.91s.72-.4,1.14-.52c.31-.08.78-.16,1.41-.24,1.28-.15,2.22-.33,2.82-.54,0-.22,0-.35,0-.41,0-.64-.15-1.1-.45-1.36-.4-.36-1-.54-1.8-.54-.74,0-1.29.13-1.65.39s-.62.72-.79,1.38l-1.55-.21c.14-.66.37-1.2.69-1.6s.79-.72,1.4-.94,1.32-.33,2.12-.33,1.44.09,1.94.28.86.42,1.1.71.4.64.49,1.08c.05.27.08.76.08,1.46v2.11c0,1.47.03,2.4.1,2.79s.2.76.4,1.12h-1.65c-.16-.33-.27-.71-.32-1.15ZM88.65,14.06c-.57.23-1.44.43-2.58.6-.65.09-1.11.2-1.38.32s-.48.29-.62.51-.22.48-.22.75c0,.42.16.77.48,1.05s.79.42,1.4.42,1.15-.13,1.63-.4.82-.63,1.05-1.09c.17-.36.25-.89.25-1.58v-.58Z"/><path fill="#fff" d="M94.34,18.75h-1.47V5.86h1.58v4.6c.67-.84,1.52-1.26,2.56-1.26.57,0,1.12.12,1.63.35s.93.56,1.27.98.59.92.78,1.52.28,1.22.28,1.9c0,1.6-.4,2.84-1.19,3.71s-1.74,1.31-2.85,1.31-1.97-.46-2.59-1.38v1.17ZM94.32,14.01c0,1.12.15,1.93.46,2.43.5.81,1.17,1.22,2.02,1.22.69,0,1.29-.3,1.79-.9s.76-1.5.76-2.69-.24-2.12-.73-2.7c-.48-.58-1.07-.87-1.75-.87s-1.29.3-1.79.9-.76,1.47-.76,2.61Z"/><path fill="#fff" d="M102.44,15.96l1.56-.25c.09.63.33,1.11.73,1.44s.96.5,1.68.5,1.27-.15,1.62-.44.53-.64.53-1.04c0-.36-.16-.64-.47-.84-.22-.14-.76-.32-1.62-.54-1.16-.29-1.96-.55-2.41-.76-.45-.21-.79-.51-1.02-.89s-.35-.8-.35-1.25c0-.42.09-.8.29-1.16.19-.35.45-.65.78-.88.25-.18.58-.34,1.01-.46s.88-.19,1.37-.19c.73,0,1.38.11,1.93.32.55.21.96.5,1.23.86s.45.84.54,1.45l-1.55.21c-.07-.48-.27-.86-.61-1.12-.34-.27-.81-.4-1.43-.4-.73,0-1.25.12-1.56.36s-.47.52-.47.84c0,.21.06.39.19.55.13.17.33.31.61.42.16.06.62.19,1.4.4,1.12.3,1.9.54,2.34.73.44.19.79.47,1.04.83s.38.81.38,1.35-.15,1.02-.46,1.49c-.31.47-.75.83-1.33,1.08s-1.24.38-1.97.38c-1.21,0-2.14-.25-2.77-.76-.64-.5-1.04-1.25-1.22-2.24Z"/><line fill="none" stroke="#fff" stroke-opacity=".55" stroke-miterlimit="10" x1="35.95" y1="23.42" x2="75.87" y2="23.42"/><path fill="#fff" d="M15.51,7.13c-1.13-1.16-2.72-1.74-4.34-1.74h-6.26v19.6h3.12s.06-8.25-.01-8.17h3.77c1.26,0,2.52-.39,3.49-1.2.96-.82,1.83-2.15,1.83-4.33,0-1.93-.73-3.26-1.6-4.16ZM13.92,11.11c-.03,1.46-1.3,2.59-2.75,2.59h-3.05v-5.64h3.32c1.05,0,2.48.78,2.48,2.99v.06Z"/><path fill="#fff" d="M16.85,15.88s-.97,1.36-2.93,1.8v7.38h11.21v-3.22h-8.28s-.06-5.96,0-5.96Z"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="pl-logo" viewBox="0 0 204.56 34"><style>@font-face{font-family:'Plus Jakarta Sans';font-weight:700;src:url(data:font/woff2;base64,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) format('woff2');}</style><g transform="translate(0,0) scale(1) translate(-10,-15)"><rect x="10" y="15" width="44" height="8" rx="4" fill="#FFFFFF"/><rect x="17" y="28" width="30" height="8" rx="4" fill="#FFFFFF"/><rect x="24" y="41" width="16" height="8" rx="4" fill="#2EE6F5"/></g><text x="55" y="30.00" font-family="'Plus Jakarta Sans',Arial,sans-serif" font-weight="700" font-size="34" letter-spacing="-0.4" fill="#FFFFFF">PipeLabs</text></symbol></svg>
 
 <div id="abar"><div class="abarIn">
- <div class="lockup"><svg class="logo" viewBox="0 0 110.19 30.31" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
+ <div class="lockup"><svg class="logo" viewBox="0 0 204.56 34" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
  <label class="apk"><span>Cliente</span>
   <select id="apick" aria-label="Escolher cliente"></select></label>
  <span class="aro">Somente leitura</span>
@@ -217,7 +221,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 <div id="app">
 <header class="band"><div class="bandIn">
  <div class="brandrow">
-  <div class="lockup"><svg class="logo" viewBox="0 0 110.19 30.31" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
+  <div class="lockup"><svg class="logo" viewBox="0 0 204.56 34" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
   <div class="upd" id="upd"></div>
  </div>
  <h1 id="title"></h1>
@@ -232,29 +236,30 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
   <div class="stat hero"><b data-i18n="s_meetings"></b><i id="k-meeting_booked">0</i></div>
   <div class="stat hero"><b data-i18n="s_interested"></b><i id="k-interested">0</i></div>
   <div class="stat"><b data-i18n="s_replied"></b><i id="k-replied">0</i></div>
-  <div class="stat"><b data-i18n="s_outreach"></b><i id="k-in_outreach">0</i></div>
+  <div class="stat"><b data-i18n="s_contacted"></b><i id="k-contacted">0</i></div>
  </div>
 </div></header>
 
 <div class="wrap"><div class="grid">
- <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="none" stroke="#3464FB" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="ch_email"></span></h2>
-  <p class="sub" data-i18n="fn_sub"></p><div class="fn" id="fn-email"></div></section>
+ <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="none" stroke="#2F5BFF" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="ch_email"></span></h2>
+  <p class="sub" data-i18n="fn_sub"></p><div class="fn" id="fn-email"></div><p class="sub" id="rate-email"></p></section>
  <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>LinkedIn</h2>
-  <p class="sub" data-i18n="fn_sub_li"></p><div class="fn" id="fn-linkedin"></div></section>
+  <p class="sub" data-i18n="fn_sub_li"></p><div class="fn" id="fn-linkedin"></div><p class="sub" id="rate-linkedin"></p></section>
 
  <section class="card"><h2 data-i18n="t_pace"></h2><p class="sub" data-i18n="sub_pace"></p>
   <svg id="chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img"></svg>
   <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap">
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span><span data-i18n="s_outreach"></span></span>
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span><span data-i18n="s_replied"></span></span></div></section>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2F5BFF;border-radius:2px"></span><span data-i18n="s_contacted"></span></span>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2EE6F5;border-radius:2px"></span><span data-i18n="s_replied"></span>&nbsp;<span data-i18n="axis_right"></span></span></div></section>
 
  <section class="card"><h2 data-i18n="t_hands"></h2><p class="sub" data-i18n="sub_hands"></p>
+  <input type="search" id="leadq" class="leadq" autocomplete="off" data-i18n-ph="q_search">
   <div class="leads" id="leads"></div></section>
 
  <section class="card"><h2 data-i18n="t_running"></h2><p class="sub" data-i18n="sub_running"></p>
   <div class="tw"><table><thead><tr>
    <th data-i18n="th_campaign"></th><th data-i18n="th_channel"></th>
-   <th class="n" data-i18n="s_outreach"></th><th class="n" data-i18n="th_replies"></th>
+   <th class="n" data-i18n="s_contacted"></th><th class="n" data-i18n="th_replies"></th>
    <th class="n" data-i18n="th_interested"></th><th class="n" data-i18n="th_meetings"></th>
   </tr></thead><tbody id="camps"></tbody></table></div>
   <p class="capnote" id="campNote"></p></section>
@@ -262,17 +267,13 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
  <section class="card"><h2 data-i18n="t_read"></h2><p class="sub" data-i18n="sub_read"></p>
   <div id="notes"></div></section>
 
- <section class="card quiet"><div class="qrow">
-  <div><span class="qn" id="k-invalid_email">0</span> <span class="ql" data-i18n="q_invalid"></span></div>
-  <div><span class="qn" id="k-excluded_before_send">0</span> <span class="ql" data-i18n="q_excluded"></span></div></div>
-  <p class="qnote" data-i18n="q_note"></p></section>
 </div>
 <footer><span data-i18n="f_left"></span><span data-i18n="f_right"></span></footer></div>
 </div>
 <div id="agency" style="display:none">
 <header class="band"><div class="bandIn">
  <div class="brandrow">
-  <div class="lockup"><svg class="logo" viewBox="0 0 110.19 30.31" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
+  <div class="lockup"><svg class="logo" viewBox="0 0 204.56 34" role="img" aria-label="PipeLabs"><use href="#pl-logo"/></svg></div>
   <div class="upd" id="a-upd"></div>
  </div>
  <h1>Painel da agência</h1>
@@ -280,7 +281,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
   <div class="stat hero"><b>Reuniões agendadas</b><i id="a-meetings">0</i></div>
   <div class="stat hero"><b>Respostas interessadas</b><i id="a-interested">0</i></div>
   <div class="stat"><b>Responderam</b><i id="a-replied">0</i></div>
-  <div class="stat"><b>Enviados para uma campanha</b><i id="a-outreach">0</i></div>
+  <div class="stat"><b>Contatados</b><i id="a-outreach">0</i></div>
  </div>
 </div></header>
 <div class="wrap"><div class="grid">
@@ -290,17 +291,17 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
    Clique em uma linha (ou use o seletor acima) para abrir o relatório daquele cliente,
    exatamente como ele o vê.</p>
   <div class="tw"><table><thead><tr>
-    <th>Cliente</th><th class="n">Enviados p/ campanha</th><th class="n">Responderam</th>
+    <th>Cliente</th><th class="n">Contatados</th><th class="n">Responderam</th>
     <th class="n">Interessadas</th><th class="n">Reuniões</th><th class="n">No-show</th>
   </tr></thead><tbody id="a-rows"></tbody></table></div>
  </section>
  <section class="card">
   <h2>Ritmo semanal · todos os clientes</h2>
-  <p class="sub">Novos contatos enviados para campanha e respostas por semana, nas últimas 8 semanas</p>
+  <p class="sub">Novos contatados e respostas por semana, nas últimas 8 semanas</p>
   <svg id="a-chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img"></svg>
   <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap">
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span>Enviados para campanha</span>
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span>Responderam</span></div>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2F5BFF;border-radius:2px"></span>Contatados</span>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2EE6F5;border-radius:2px"></span>Responderam (eixo direito)</span></div>
  </section>
  <section class="card quiet">
   <p class="qnote" style="margin:0">Esta tela é interna. <strong>Este resumo</strong> mostra apenas
@@ -328,10 +329,10 @@ const I18N = {
     title:n=>"Prospecção para "+n, updated:"Atualizado", to:"até",
     p_month:"Este mês", p_30:"Últimos 30 dias", p_all:"Tudo",
     s_meetings:"Reuniões agendadas", s_interested:"Respostas interessadas",
-    s_replied:"Responderam", s_outreach:"Enviados para uma campanha",
+    s_replied:"Responderam", s_contacted:"Contatados",
     ch_email:"E-mail", fn_sub:"Do contato pesquisado à reunião agendada",
     fn_sub_li:"Tem o aceite da conexão, degrau que o e-mail não tem",
-    t_pace:"Ritmo", sub_pace:"Novos contatos enviados para campanha e respostas ao longo do período escolhido",
+    t_pace:"Ritmo", sub_pace:"Novos contatados e respostas ao longo do período escolhido",
     t_hands:"Quem levantou a mão",
     sub_hands:"Quem demonstrou interesse ou agendou reunião. Mudou alguma coisa? Atualize o status aqui.",
     t_running:"O que está rodando agora", sub_running:"Campanhas com contatos em prospecção ou atividade recente",
@@ -342,7 +343,9 @@ const I18N = {
     q_excluded:"contatos excluídos antes do envio",
     q_note:"Endereços inválidos são removidos antes do disparo para proteger a reputação do seu domínio. Os excluídos são perfis bloqueados, sem foto, ou com indício de que a pessoa trocou de empresa.",
     f_left:"Relatório gerado por PipeLabs", f_right:"Dúvidas? Fale com o seu ponto de contato.",
-    stages:{ researched:"Pesquisados", in_outreach:"Enviados para uma campanha", connected:"Conexões aceitas",
+    r_reply:"Taxa de resposta", r_accept:"Aceite", r_since:"desde",
+    q_search:"Buscar por nome, e-mail ou empresa", noMatch:"Ninguém encontrado com essa busca.", axis_right:"(eixo direito)",
+    stages:{ researched:"Pesquisados", sent:"Carregados", contacted:"Contatados", contacted_li:"Convites enviados", message_sent:"Mensagens enviadas", connected:"Conexões aceitas",
       replied:"Responderam", interested:"Interessados", meeting_booked:"Reuniões agendadas" },
     st:{ interested:"Interessado", meeting_booked:"Reunião agendada", no_show:"Não compareceu",
          won:"Cliente ganho", lost:"Cliente perdido", meeting_completed:"Reunião realizada",
@@ -371,10 +374,10 @@ const I18N = {
     title:n=>"Outreach for "+n, updated:"Updated", to:"to",
     p_month:"This month", p_30:"Last 30 days", p_all:"All time",
     s_meetings:"Meetings booked", s_interested:"Interested replies",
-    s_replied:"Replied", s_outreach:"Sent to a campaign",
+    s_replied:"Replied", s_contacted:"Contacted",
     ch_email:"Email", fn_sub:"From researched contact to booked meeting",
     fn_sub_li:"Includes the connection accept, a step email does not have",
-    t_pace:"Pace", sub_pace:"New contacts sent to a campaign, and replies, across the period you selected",
+    t_pace:"Pace", sub_pace:"New contacted leads, and replies, across the period you selected",
     t_hands:"Who raised their hand",
     sub_hands:"People who showed interest or booked a meeting. Something changed? Update the status here.",
     t_running:"What's running now", sub_running:"Campaigns with contacts in outreach or recent activity",
@@ -385,7 +388,9 @@ const I18N = {
     q_excluded:"contacts excluded before sending",
     q_note:"Invalid addresses are removed before sending to protect your domain reputation. Excluded contacts are locked profiles, profiles with no photo, or people who appear to have changed company.",
     f_left:"Report generated by PipeLabs", f_right:"Questions? Talk to your point of contact.",
-    stages:{ researched:"Researched", in_outreach:"Sent to a campaign", connected:"Connections accepted",
+    r_reply:"Reply rate", r_accept:"Acceptance", r_since:"since",
+    q_search:"Search by name, e-mail or company", noMatch:"No one matches this search.", axis_right:"(right axis)",
+    stages:{ researched:"Researched", sent:"Loaded", contacted:"Contacted", contacted_li:"Invites sent", message_sent:"Messages sent", connected:"Connections accepted",
       replied:"Replied", interested:"Interested", meeting_booked:"Meetings booked" },
     st:{ interested:"Interested", meeting_booked:"Meeting booked", no_show:"No-show",
          won:"Closed won", lost:"Closed lost", meeting_completed:"Meeting held",
@@ -414,10 +419,10 @@ const I18N = {
     title:n=>"Prospección para "+n, updated:"Actualizado", to:"hasta",
     p_month:"Este mes", p_30:"Últimos 30 días", p_all:"Todo",
     s_meetings:"Reuniones agendadas", s_interested:"Respuestas interesadas",
-    s_replied:"Respondieron", s_outreach:"Enviados a una campaña",
+    s_replied:"Respondieron", s_contacted:"Contactados",
     ch_email:"Correo", fn_sub:"Del contacto investigado a la reunión agendada",
     fn_sub_li:"Incluye la aceptación de conexión, un paso que el correo no tiene",
-    t_pace:"Ritmo", sub_pace:"Nuevos contactos enviados a una campaña, y respuestas, en el período que eligió",
+    t_pace:"Ritmo", sub_pace:"Nuevos contactados, y respuestas, en el período que eligió",
     t_hands:"Quién levantó la mano",
     sub_hands:"Personas que mostraron interés o agendaron reunión. ¿Cambió algo? Actualice el estado aquí.",
     t_running:"Qué está corriendo ahora", sub_running:"Campañas con contactos en prospección o actividad reciente",
@@ -428,7 +433,9 @@ const I18N = {
     q_excluded:"contactos excluidos antes del envío",
     q_note:"Las direcciones inválidas se eliminan antes del envío para proteger la reputación de su dominio. Los excluidos son perfiles bloqueados, sin foto, o con indicios de cambio de empresa.",
     f_left:"Informe generado por PipeLabs", f_right:"¿Dudas? Hable con su punto de contacto.",
-    stages:{ researched:"Investigados", in_outreach:"Enviados a una campaña", connected:"Conexiones aceptadas",
+    r_reply:"Tasa de respuesta", r_accept:"Aceptación", r_since:"desde",
+    q_search:"Buscar por nombre, correo o empresa", noMatch:"Nadie coincide con esta búsqueda.", axis_right:"(eje derecho)",
+    stages:{ researched:"Investigados", sent:"Cargados", contacted:"Contactados", contacted_li:"Invitaciones enviadas", message_sent:"Mensajes enviados", connected:"Conexiones aceptadas",
       replied:"Respondieron", interested:"Interesados", meeting_booked:"Reuniones agendadas" },
     st:{ interested:"Interesado", meeting_booked:"Reunión agendada", no_show:"No asistió",
          won:"Cliente ganado", lost:"Cliente perdido", meeting_completed:"Reunión realizada",
@@ -467,8 +474,8 @@ const PAGE_STEP = 10;
 let PAGE = PAGE_STEP;
 const BR = n => Number(n || 0).toLocaleString(L.locale);
 
-const EMAIL_STAGES = ["researched","in_outreach","replied","interested","meeting_booked"];
-const LI_STAGES    = ["researched","in_outreach","connected","replied","interested","meeting_booked"];
+const EMAIL_STAGES = ["sent","contacted","replied","interested","meeting_booked"];
+const LI_STAGES    = ["contacted","connected","message_sent","replied","interested","meeting_booked"];
 
 const ymd = d => d.toISOString().slice(0,10);
 const today = () => new Date(D.generated_at || Date.now());
@@ -483,7 +490,7 @@ function toast(m){
 }
 
 function funnel(elId, ch, stages, color){
-  const rows = stages.map(s => [L.stages[s], total(s, ch)]);
+  const rows = stages.map(s => [(ch === "linkedin" && s === "contacted") ? L.stages.contacted_li : L.stages[s], total(s, ch)]);
   // Scale off the biggest bar, not the first one. A reply that arrives this month to a lead
   // researched last month produces a funnel whose FIRST stage is 0 -- the old test blanked the
   // whole card while the headline tiles right above it were showing that reply.
@@ -494,6 +501,20 @@ function funnel(elId, ch, stages, color){
     return '<div class="row"><em>' + r[0] + '</em><s>' + BR(r[1]) + '</s>' +
       '<div class="track"><div class="fill" style="width:' + pct + '%;background:' + color + '"></div></div></div>';
   }).join("");
+}
+
+// Rates by COHORT (2026-11-04): of the leads first contacted inside the selected period, how many later accepted /
+// replied / showed interest, whatever the date of that later step. The old date-cutoff version divided this month's
+// acceptances by this month's invites and showed 581% on Supersonic. Leads imported only because they replied
+// (backfilled_from_platform) are not in the base, so an old campaign whose list is not in the database cannot inflate it.
+function rates(){
+  const pct = (a, b) => b ? (100 * a / b).toLocaleString(L.locale, { maximumFractionDigits: 1 }) + "%" : "—";
+  const c = (evt, ch) => D.daily.reduce((s,x) => s + ((x.e === evt && x.ch === ch && inRange(x.d)) ? x.n : 0), 0);
+  const b = ch => " (base: " + BR(c("rate_base", ch)) + " " + L.stages.contacted.toLowerCase() + ")";
+  $("rate-email").textContent = L.r_reply + ": " + pct(c("rate_replied","email"), c("rate_base","email"))
+    + " · " + L.stages.interested + ": " + pct(c("rate_interested","email"), c("rate_base","email")) + b("email");
+  $("rate-linkedin").textContent = L.r_accept + ": " + pct(c("rate_connected","linkedin"), c("rate_base","linkedin"))
+    + " · " + L.r_reply + ": " + pct(c("rate_replied","linkedin"), c("rate_message","linkedin")) + b("linkedin");
 }
 
 function weekly(){
@@ -523,28 +544,33 @@ function weekly(){
 
   const series = evt => buckets.map(b =>
     D.daily.reduce((s,x) => s + ((x.e === evt && x.d >= b[0] && x.d <= b[1]) ? x.n : 0), 0));
-  const a = series("in_outreach"), r = series("replied");
-  const W=900,H=250,Lm=46,Rm=12,Tm=16,Bm=38;
-  const max = Math.max(...a, ...r, 1) * 1.15;
+  const a = series("contacted"), r = series("replied");
+  // Two scales: contacts are counted in thousands and replies in dozens, so on one axis the reply line lies
+  // flat on zero (Supersonic, 04/11). Left axis = contacted (blue), right axis = replies (cyan).
+  const W=900,H=250,Lm=46,Rm=40,Tm=16,Bm=38;
+  const max = Math.max(...a, 1) * 1.15, maxR = Math.max(...r, 1) * 1.15;
   const X = i => a.length < 2 ? Lm + (W-Lm-Rm)/2 : Lm + i*((W-Lm-Rm)/(a.length-1));
   const Y = v => H-Bm - (v/max)*(H-Tm-Bm);
+  const YR = v => H-Bm - (v/maxR)*(H-Tm-Bm);
   const line = arr => arr.map((v,i) => (i?"L":"M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+  const lineR = arr => arr.map((v,i) => (i?"L":"M") + X(i).toFixed(1) + " " + YR(v).toFixed(1)).join(" ");
   let g = "";
   for (let i = 0; i <= 3; i++){
     const gy = Tm + i*((H-Tm-Bm)/3), val = Math.round(max - i*(max/3));
     g += '<line x1="'+Lm+'" y1="'+gy+'" x2="'+(W-Rm)+'" y2="'+gy+'" stroke="var(--lineSoft)" stroke-width="1"/>' +
-         '<text x="'+(Lm-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+BR(val)+'</text>';
+         '<text x="'+(Lm-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+BR(val)+'</text>' +
+         '<text x="'+(W-Rm+8)+'" y="'+(gy+4)+'" text-anchor="start" font-size="11" fill="#1FC8D8">'+BR(Math.round(maxR - i*(maxR/3)))+'</text>';
   }
   // With daily buckets the axis can hold 21 labels; print every other one so they do not collide.
   const skip = labels.length > 12 ? 2 : 1;
   const lbl = labels.map((t,i) => (i % skip) ? '' :
     '<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+t+'</text>').join("");
   $("chart").innerHTML = g + lbl +
-    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#3464FB" opacity=".10"/>' +
-    '<path d="'+line(a)+'" fill="none" stroke="#3464FB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<path d="'+line(r)+'" fill="none" stroke="#34DFFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#3464FB"/>' +
-    '<circle cx="'+X(r.length-1)+'" cy="'+Y(r.at(-1))+'" r="4" fill="#34DFFA"/>';
+    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#2F5BFF" opacity=".10"/>' +
+    '<path d="'+line(a)+'" fill="none" stroke="#2F5BFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="'+lineR(r)+'" fill="none" stroke="#2EE6F5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#2F5BFF"/>' +
+    '<circle cx="'+X(r.length-1)+'" cy="'+YR(r.at(-1))+'" r="4" fill="#2EE6F5"/>';
 }
 
 const IC = {
@@ -652,6 +678,7 @@ function cleanBody(b){
     .replace(/^[ \t]*(?:>[ \t]?)+/gm, "")          // quote markers at the start of a line
     .replace(/(^|\s)(?:>[ \t]*)+(?=\S)/g, "$1")   // ...and inline, where newlines were flattened
     .replace(/\[image:[^\]]*\]/gi, "")              // signature images
+    .replace(/\[cid:[^\]]*\]/gi, "")                // Outlook inline images
     .replace(/<(?:https?:|mailto:)[^>\s]*>/gi, "")   // link targets Gmail appends after anchors
     .replace(/\*([^*\n]{1,120})\*/g, "$1")          // plain-text bold
     .replace(/[ \t]+$/gm, "")
@@ -670,9 +697,13 @@ function conversation(raw){
       : '');
 }
 
+// Search by person, e-mail, company or campaign (accents and case ignored), on top of the date filter.
+const fold = t => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 function leads(){
-  const rows = (D.leads || []).filter(l => l.event_at && inRange(String(l.event_at).slice(0,10)));
-  if (!rows.length){ $("leads").innerHTML = '<p class="empty">' + L.emptyLeads + '</p>'; return; }
+  const q = fold(($("leadq") || {}).value || "").trim();
+  const rows = (D.leads || []).filter(l => l.event_at && inRange(String(l.event_at).slice(0,10)))
+    .filter(l => !q || fold([l.full_name, l.email, l.company_name, l.company_domain, l.campaign_display, l.linkedin_url].join(" ")).includes(q));
+  if (!rows.length){ $("leads").innerHTML = '<p class="empty">' + (q ? L.noMatch : L.emptyLeads) + '</p>'; return; }
 
   const rest = Math.max(rows.length - PAGE, 0);
   $("leads").innerHTML = rows.slice(0, PAGE).map(l => {
@@ -779,7 +810,7 @@ function camps(){
   $("camps").innerHTML = rows.map(c => {
     const ch = String(c.channels || "").replace("linkedin","LinkedIn").replace("email", L.ch_email);
     return '<tr><td class="nm">' + esc(c.campaign_display) + '</td><td>' + esc(ch) + '</td>' +
-      '<td class="n">' + BR(c.in_outreach) + '</td><td class="n">' + BR(c.replies) + '</td>' +
+      '<td class="n">' + BR(c.contacted) + '</td><td class="n">' + BR(c.replies) + '</td>' +
       '<td class="n">' + BR(c.interested_replies) + '</td><td class="n">' + BR(c.meetings) + '</td></tr>';
   }).join("");
 }
@@ -819,14 +850,23 @@ function noteSections(body){
 }
 
 function headline(){
-  ["meeting_booked","interested","replied","in_outreach","invalid_email","excluded_before_send"]
+  ["meeting_booked","interested","replied","contacted","invalid_email","excluded_before_send"]
     .forEach(e => { const el = $("k-" + e); if (el) el.textContent = BR(total(e)); });
 }
 
+let LEADQ_WIRED = false;
+function wireLeadSearch(){
+  const el = $("leadq"); if (!el || LEADQ_WIRED) return;
+  LEADQ_WIRED = true;
+  el.placeholder = L.q_search;
+  el.addEventListener("input", () => { PAGE = PAGE_STEP; leads(); });
+}
 function render(){
+  wireLeadSearch();
   headline();
-  funnel("fn-email","email",EMAIL_STAGES,"#3464FB");
-  funnel("fn-linkedin","linkedin",LI_STAGES,"#34DFFA");
+  funnel("fn-email","email",EMAIL_STAGES,"#2F5BFF");
+  funnel("fn-linkedin","linkedin",LI_STAGES,"#2EE6F5");
+  rates();
   weekly(); leads(); camps();
 }
 
@@ -859,26 +899,31 @@ function agencyChart(daily, generatedAt){
   }
   const series = evt => buckets.map(b =>
     daily.reduce((s,x) => s + ((x.e === evt && x.d >= b[0] && x.d <= b[1]) ? x.n : 0), 0));
-  const a = series("in_outreach"), r = series("replied");
-  const W=900,H=250,Lm=46,Rm=12,Tm=16,Bm=38;
-  const max = Math.max(...a, ...r, 1) * 1.15;
+  const a = series("contacted"), r = series("replied");
+  // Two scales: contacts are counted in thousands and replies in dozens, so on one axis the reply line lies
+  // flat on zero (Supersonic, 04/11). Left axis = contacted (blue), right axis = replies (cyan).
+  const W=900,H=250,Lm=46,Rm=40,Tm=16,Bm=38;
+  const max = Math.max(...a, 1) * 1.15, maxR = Math.max(...r, 1) * 1.15;
   const X = i => Lm + i*((W-Lm-Rm)/(a.length-1));
   const Y = v => H-Bm - (v/max)*(H-Tm-Bm);
+  const YR = v => H-Bm - (v/maxR)*(H-Tm-Bm);
   const line = arr => arr.map((v,i) => (i?"L":"M") + X(i).toFixed(1) + " " + Y(v).toFixed(1)).join(" ");
+  const lineR = arr => arr.map((v,i) => (i?"L":"M") + X(i).toFixed(1) + " " + YR(v).toFixed(1)).join(" ");
   let g = "";
   for (let i = 0; i <= 3; i++){
     const gy = Tm + i*((H-Tm-Bm)/3), val = Math.round(max - i*(max/3));
     g += '<line x1="'+Lm+'" y1="'+gy+'" x2="'+(W-Rm)+'" y2="'+gy+'" stroke="var(--lineSoft)" stroke-width="1"/>' +
-         '<text x="'+(Lm-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+val.toLocaleString("pt-BR")+'</text>';
+         '<text x="'+(Lm-9)+'" y="'+(gy+4)+'" text-anchor="end" font-size="11" fill="var(--muted)">'+val.toLocaleString("pt-BR")+'</text>' +
+         '<text x="'+(W-Rm+8)+'" y="'+(gy+4)+'" text-anchor="start" font-size="11" fill="#1FC8D8">'+Math.round(maxR - i*(maxR/3)).toLocaleString("pt-BR")+'</text>';
   }
   const lbl = labels.map((t,i) =>
     '<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+t+'</text>').join("");
   $("a-chart").innerHTML = g + lbl +
-    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#3464FB" opacity=".10"/>' +
-    '<path d="'+line(a)+'" fill="none" stroke="#3464FB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<path d="'+line(r)+'" fill="none" stroke="#34DFFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#3464FB"/>' +
-    '<circle cx="'+X(r.length-1)+'" cy="'+Y(r.at(-1))+'" r="4" fill="#34DFFA"/>';
+    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#2F5BFF" opacity=".10"/>' +
+    '<path d="'+line(a)+'" fill="none" stroke="#2F5BFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="'+lineR(r)+'" fill="none" stroke="#2EE6F5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#2F5BFF"/>' +
+    '<circle cx="'+X(r.length-1)+'" cy="'+YR(r.at(-1))+'" r="4" fill="#2EE6F5"/>';
 }
 
 function renderAgency(d){
@@ -887,7 +932,7 @@ function renderAgency(d){
   $("a-meetings").textContent  = br(sum("meetings"));
   $("a-interested").textContent = br(sum("interested"));
   $("a-replied").textContent   = br(sum("replied"));
-  $("a-outreach").textContent  = br(sum("in_outreach"));
+  $("a-outreach").textContent  = br(sum("contacted"));
   $("a-upd").textContent = "Atualizado " +
     new Date(d.generated_at).toLocaleString("pt-BR", { dateStyle:"short", timeStyle:"short" });
   // Each row opens that client's own report -- the same thing the dropdown does.
@@ -895,7 +940,7 @@ function renderAgency(d){
     '<tr class="crow" tabindex="0" role="button" data-client="' + esc(c.id) + '"' +
     ' title="Abrir o relatório de ' + esc(c.name) + '">' +
     '<td class="nm">' + esc(c.name) + '</td>' +
-    '<td class="n">' + br(c.in_outreach) + '</td><td class="n">' + br(c.replied) + '</td>' +
+    '<td class="n">' + br(c.contacted) + '</td><td class="n">' + br(c.replied) + '</td>' +
     '<td class="n">' + br(c.interested) + '</td><td class="n">' + br(c.meetings) + '</td>' +
     '<td class="n">' + br(c.no_shows) + '</td></tr>').join("")
     || '<tr><td colspan="6" class="empty">Nenhum cliente ainda.</td></tr>';
