@@ -23,25 +23,21 @@
 -->
 <style>
 :root{
- --brand:#2F5BFF; --brand50:#EBF0FE; --cyan:#2EE6F5;
+ --brand:#3464FB; --brand50:#EBF0FE; --cyan:#34DFFA;
  --page:#F5F7FA; --card:#fff; --line:#E2E5EB; --lineSoft:#F0F1F4;
- --heading:#070340; --body:#4D4D79; --muted:#8080A0; --alt:#EDEFF6;
+ --heading:#00003F; --body:#4D4D79; --muted:#8080A0; --alt:#EDEFF6;
  --ok:#0A7B4F; --okbg:#ECFDF5; --warn:#B45309; --warnbg:#FEF3C7;
  --shadow:0 1px 2px rgba(0,0,63,.05);
  --band:linear-gradient(110deg,#140C7C 0%,#0A0558 45%,#070340 100%);
 }
-@media (prefers-color-scheme:dark){:root{
- --page:#05052B; --card:#0D0D42; --line:#26264F; --lineSoft:#1C1C48;
- --heading:#F2F4FF; --body:#B3B3C7; --alt:#14143F; --brand50:#141C4A;
- --ok:#4ADE9E; --okbg:#052E20; --warn:#FCD34D; --warnbg:#3A2A08;
- --shadow:0 2px 4px rgba(0,0,0,.25);
- --band:linear-gradient(110deg,#140C7C 0%,#0A0558 45%,#070340 100%);}}
+/* No automatic dark mode (2026-11-06): with the computer in dark mode it painted everything below the hero
+   navy with blue cards, and Leandro wants the report light and legible. The hero keeps the brand kit. */
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--body);font-family:'Satoshi',ui-sans-serif,system-ui,sans-serif;
  font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px 56px}
 @media(min-width:900px){.wrap{padding:0 40px 72px}}
-.band{position:relative;overflow:hidden;background:var(--band);color:#fff}
+.band{position:relative;overflow:hidden;background:var(--band);color:#fff;--brand:#2F5BFF;--cyan:#2EE6F5}
 .band::before{content:"";position:absolute;inset:0;pointer-events:none;
  background-image:radial-gradient(rgba(255,255,255,.12) 1px,transparent 1px);background-size:24px 24px;opacity:.18}
 .band::after{content:"";position:absolute;inset:0;pointer-events:none;
@@ -159,7 +155,7 @@ td.nm{font-weight:700;color:var(--heading);min-width:260px}
 .empty{font-size:13.5px;color:var(--muted);padding:6px 0}
 footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display:flex;
  justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);background:#070340;
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);background:#00003F;
  color:#fff;font-size:13px;font-weight:600;padding:10px 16px;border-radius:8px;opacity:0;pointer-events:none;
  transition:opacity .18s,transform .18s;z-index:50;max-width:90vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -241,7 +237,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
 </div></header>
 
 <div class="wrap"><div class="grid">
- <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="none" stroke="#2F5BFF" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="ch_email"></span></h2>
+ <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="none" stroke="#3464FB" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg><span data-i18n="ch_email"></span></h2>
   <p class="sub" data-i18n="fn_sub"></p><div class="fn" id="fn-email"></div><p class="sub" id="rate-email"></p></section>
  <section class="card c6"><h2><svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>LinkedIn</h2>
   <p class="sub" data-i18n="fn_sub_li"></p><div class="fn" id="fn-linkedin"></div><p class="sub" id="rate-linkedin"></p></section>
@@ -249,8 +245,8 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
  <section class="card"><h2 data-i18n="t_pace"></h2><p class="sub" data-i18n="sub_pace"></p>
   <svg id="chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img"></svg>
   <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap">
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2F5BFF;border-radius:2px"></span><span data-i18n="s_contacted"></span></span>
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2EE6F5;border-radius:2px"></span><span data-i18n="s_replied"></span>&nbsp;<span data-i18n="axis_right"></span></span></div></section>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span><span data-i18n="s_contacted"></span></span>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span><span data-i18n="s_replied"></span>&nbsp;<span data-i18n="axis_right"></span></span></div></section>
 
  <section class="card"><h2 data-i18n="t_hands"></h2><p class="sub" data-i18n="sub_hands"></p>
   <input type="search" id="leadq" class="leadq" autocomplete="off" data-i18n-ph="q_search">
@@ -300,8 +296,8 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
   <p class="sub">Novos contatados e respostas por semana, nas últimas 8 semanas</p>
   <svg id="a-chart" viewBox="0 0 900 250" preserveAspectRatio="xMidYMid meet" style="width:100%;height:auto;display:block" role="img"></svg>
   <div style="display:flex;gap:18px;margin-top:12px;font-size:12.5px;color:var(--muted);flex-wrap:wrap">
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2F5BFF;border-radius:2px"></span>Contatados</span>
-   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#2EE6F5;border-radius:2px"></span>Responderam (eixo direito)</span></div>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#3464FB;border-radius:2px"></span>Contatados</span>
+   <span style="display:inline-flex;align-items:center;gap:7px"><span style="width:14px;height:3px;background:#34DFFA;border-radius:2px"></span>Responderam (eixo direito)</span></div>
  </section>
  <section class="card quiet">
   <p class="qnote" style="margin:0">Esta tela é interna. <strong>Este resumo</strong> mostra apenas
@@ -566,11 +562,11 @@ function weekly(){
   const lbl = labels.map((t,i) => (i % skip) ? '' :
     '<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+t+'</text>').join("");
   $("chart").innerHTML = g + lbl +
-    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#2F5BFF" opacity=".10"/>' +
-    '<path d="'+line(a)+'" fill="none" stroke="#2F5BFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<path d="'+lineR(r)+'" fill="none" stroke="#2EE6F5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#2F5BFF"/>' +
-    '<circle cx="'+X(r.length-1)+'" cy="'+YR(r.at(-1))+'" r="4" fill="#2EE6F5"/>';
+    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#3464FB" opacity=".10"/>' +
+    '<path d="'+line(a)+'" fill="none" stroke="#3464FB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="'+lineR(r)+'" fill="none" stroke="#34DFFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#3464FB"/>' +
+    '<circle cx="'+X(r.length-1)+'" cy="'+YR(r.at(-1))+'" r="4" fill="#34DFFA"/>';
 }
 
 const IC = {
@@ -864,8 +860,8 @@ function wireLeadSearch(){
 function render(){
   wireLeadSearch();
   headline();
-  funnel("fn-email","email",EMAIL_STAGES,"#2F5BFF");
-  funnel("fn-linkedin","linkedin",LI_STAGES,"#2EE6F5");
+  funnel("fn-email","email",EMAIL_STAGES,"#3464FB");
+  funnel("fn-linkedin","linkedin",LI_STAGES,"#34DFFA");
   rates();
   weekly(); leads(); camps();
 }
@@ -919,11 +915,11 @@ function agencyChart(daily, generatedAt){
   const lbl = labels.map((t,i) =>
     '<text x="'+X(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)">'+t+'</text>').join("");
   $("a-chart").innerHTML = g + lbl +
-    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#2F5BFF" opacity=".10"/>' +
-    '<path d="'+line(a)+'" fill="none" stroke="#2F5BFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<path d="'+lineR(r)+'" fill="none" stroke="#2EE6F5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#2F5BFF"/>' +
-    '<circle cx="'+X(r.length-1)+'" cy="'+YR(r.at(-1))+'" r="4" fill="#2EE6F5"/>';
+    '<path d="'+line(a)+' L'+X(a.length-1)+' '+(H-Bm)+' L'+Lm+' '+(H-Bm)+' Z" fill="#3464FB" opacity=".10"/>' +
+    '<path d="'+line(a)+'" fill="none" stroke="#3464FB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="'+lineR(r)+'" fill="none" stroke="#34DFFA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<circle cx="'+X(a.length-1)+'" cy="'+Y(a.at(-1))+'" r="4" fill="#3464FB"/>' +
+    '<circle cx="'+X(r.length-1)+'" cy="'+YR(r.at(-1))+'" r="4" fill="#34DFFA"/>';
 }
 
 function renderAgency(d){
