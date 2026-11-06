@@ -119,6 +119,7 @@ h2 svg{width:17px;height:17px;flex:none}
 .stNo{color:var(--warn);background:var(--warnbg)}
 .stWon{color:#fff;background:var(--ok)}
 .stLost{color:var(--muted);background:var(--alt)}
+.tag.pz{color:var(--warn);background:var(--warnbg);margin-left:8px;vertical-align:2px}
 .tw{overflow-x:auto;margin:0 -20px;padding:0 20px}
 table{border-collapse:collapse;width:100%;min-width:640px}
 th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
@@ -350,7 +351,7 @@ const I18N = {
     employees:"funcionários", people:n=>n+(n===1?" pessoa":" pessoas"),
     emptyPeriod:"Nada neste período ainda.",
     emptyLeads:"Ninguém levantou a mão neste período ainda.",
-    emptyCamps:"Nenhuma campanha ativa no momento.",
+    emptyCamps:"Nenhuma campanha ativa no momento.", camp_paused:"Pausada",
     emptyNotes:"A primeira leitura mensal chega no fim deste mês.",
     capped:(n,t)=>"Mostrando os "+n+" mais recentes, de "+t+" no total.",
     showing:(a,b)=>"Mostrando "+a+" de "+b, more:n=>"Ver mais "+n,
@@ -395,7 +396,7 @@ const I18N = {
     employees:"employees", people:n=>n+(n===1?" person":" people"),
     emptyPeriod:"Nothing in this period yet.",
     emptyLeads:"Nobody has raised their hand in this period yet.",
-    emptyCamps:"No active campaigns right now.",
+    emptyCamps:"No active campaigns right now.", camp_paused:"Paused",
     emptyNotes:"The first monthly read arrives at the end of this month.",
     capped:(n,t)=>"Showing the "+n+" most recent, of "+t+" in total.",
     showing:(a,b)=>"Showing "+a+" of "+b, more:n=>"Show "+n+" more",
@@ -440,7 +441,7 @@ const I18N = {
     employees:"empleados", people:n=>n+(n===1?" persona":" personas"),
     emptyPeriod:"Nada en este período todavía.",
     emptyLeads:"Nadie ha levantado la mano en este período todavía.",
-    emptyCamps:"Ninguna campaña activa por ahora.",
+    emptyCamps:"Ninguna campaña activa por ahora.", camp_paused:"Pausada",
     emptyNotes:"La primera lectura mensual llega a fin de mes.",
     capped:(n,t)=>"Mostrando los "+n+" más recientes, de "+t+" en total.",
     showing:(a,b)=>"Mostrando "+a+" de "+b, more:n=>"Ver "+n+" más",
@@ -805,7 +806,9 @@ function camps(){
   }
   $("camps").innerHTML = rows.map(c => {
     const ch = String(c.channels || "").replace("linkedin","LinkedIn").replace("email", L.ch_email);
-    return '<tr><td class="nm">' + esc(c.campaign_display) + '</td><td>' + esc(ch) + '</td>' +
+    // 40: a paused campaign stays in the list, marked, so the client sees it is on hold and not gone (Leandro, 06/11).
+    const pz = c.paused ? ' <span class="tag pz">' + L.camp_paused + '</span>' : '';
+    return '<tr><td class="nm">' + esc(c.campaign_display) + pz + '</td><td>' + esc(ch) + '</td>' +
       '<td class="n">' + BR(c.contacted) + '</td><td class="n">' + BR(c.replies) + '</td>' +
       '<td class="n">' + BR(c.interested_replies) + '</td><td class="n">' + BR(c.meetings) + '</td></tr>';
   }).join("");
