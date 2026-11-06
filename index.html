@@ -256,7 +256,7 @@ footer{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display
  <section class="card"><h2 data-i18n="t_running"></h2><p class="sub" data-i18n="sub_running"></p>
   <div class="tw"><table><thead><tr>
    <th data-i18n="th_campaign"></th><th data-i18n="th_channel"></th>
-   <th class="n" data-i18n="s_contacted"></th><th class="n" data-i18n="th_replies"></th>
+   <th class="n" data-i18n="th_added"></th><th class="n" data-i18n="s_contacted"></th><th class="n" data-i18n="th_replies"></th>
    <th class="n" data-i18n="th_interested"></th><th class="n" data-i18n="th_meetings"></th>
   </tr></thead><tbody id="camps"></tbody></table></div>
   <p class="capnote" id="campNote"></p></section>
@@ -332,8 +332,8 @@ const I18N = {
     t_pace:"Ritmo", sub_pace:"Novos contatados e respostas ao longo do período escolhido",
     t_hands:"Quem levantou a mão",
     sub_hands:"Quem demonstrou interesse ou agendou reunião. Mudou alguma coisa? Atualize o status aqui.",
-    t_running:"O que está rodando agora", sub_running:"Campanhas com contatos em prospecção ou atividade recente",
-    th_campaign:"Campanha", th_channel:"Canal", th_replies:"Respostas",
+    t_running:"O que está rodando agora", sub_running:"Campanhas com contatos em prospecção ou atividade recente. Adicionados: pessoas já colocadas na campanha, inclusive as que ainda vão receber a primeira mensagem.",
+    th_campaign:"Campanha", th_added:"Adicionados", th_channel:"Canal", th_replies:"Respostas",
     th_interested:"Interessadas", th_meetings:"Reuniões",
     t_read:"Nossa leitura do mês", sub_read:"O que estamos mudando, e o que prometemos da última vez",
     q_invalid:"endereços inválidos filtrados antes do envio",
@@ -377,8 +377,8 @@ const I18N = {
     t_pace:"Pace", sub_pace:"New contacted leads, and replies, across the period you selected",
     t_hands:"Who raised their hand",
     sub_hands:"People who showed interest or booked a meeting. Something changed? Update the status here.",
-    t_running:"What's running now", sub_running:"Campaigns with contacts in outreach or recent activity",
-    th_campaign:"Campaign", th_channel:"Channel", th_replies:"Replies",
+    t_running:"What's running now", sub_running:"Campaigns with contacts in outreach or recent activity. Added: people already placed in the campaign, including those still waiting for the first message.",
+    th_campaign:"Campaign", th_added:"Added", th_channel:"Channel", th_replies:"Replies",
     th_interested:"Interested", th_meetings:"Meetings",
     t_read:"Our read this month", sub_read:"What we're changing, and what we promised last time",
     q_invalid:"invalid addresses filtered before sending",
@@ -422,8 +422,8 @@ const I18N = {
     t_pace:"Ritmo", sub_pace:"Nuevos contactados, y respuestas, en el período que eligió",
     t_hands:"Quién levantó la mano",
     sub_hands:"Personas que mostraron interés o agendaron reunión. ¿Cambió algo? Actualice el estado aquí.",
-    t_running:"Qué está corriendo ahora", sub_running:"Campañas con contactos en prospección o actividad reciente",
-    th_campaign:"Campaña", th_channel:"Canal", th_replies:"Respuestas",
+    t_running:"Qué está corriendo ahora", sub_running:"Campañas con contactos en prospección o actividad reciente. Agregados: personas ya colocadas en la campaña, incluidas las que todavía van a recibir el primer mensaje.",
+    th_campaign:"Campaña", th_added:"Agregados", th_channel:"Canal", th_replies:"Respuestas",
     th_interested:"Interesadas", th_meetings:"Reuniones",
     t_read:"Nuestra lectura del mes", sub_read:"Qué estamos cambiando, y qué prometimos la última vez",
     q_invalid:"direcciones inválidas filtradas antes del envío",
@@ -802,13 +802,16 @@ function camps(){
   $("campNote").textContent = L.campNote(BR(shown), BR(allTime));
 
   if (!rows.length){
-    $("camps").innerHTML = '<tr><td colspan="6" class="empty">' + L.emptyCamps + '</td></tr>'; return;
+    $("camps").innerHTML = '<tr><td colspan="7" class="empty">' + L.emptyCamps + '</td></tr>'; return;
   }
   $("camps").innerHTML = rows.map(c => {
     const ch = String(c.channels || "").replace("linkedin","LinkedIn").replace("email", L.ch_email);
     // 40: a paused campaign stays in the list, marked, so the client sees it is on hold and not gone (Leandro, 06/11).
     const pz = c.paused ? ' <span class="tag pz">' + L.camp_paused + '</span>' : '';
     return '<tr><td class="nm">' + esc(c.campaign_display) + pz + '</td><td>' + esc(ch) + '</td>' +
+      // 41: people added to the campaign (queue included, minus those barred before sending), so a campaign that has
+      // not sent yet shows it already has people instead of a row of zeros (Leandro, 06/11).
+      '<td class="n">' + (c.added == null ? "—" : BR(c.added)) + '</td>' +
       '<td class="n">' + BR(c.contacted) + '</td><td class="n">' + BR(c.replies) + '</td>' +
       '<td class="n">' + BR(c.interested_replies) + '</td><td class="n">' + BR(c.meetings) + '</td></tr>';
   }).join("");
