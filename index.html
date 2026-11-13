@@ -694,12 +694,20 @@ function conversation(raw){
       : '');
 }
 
+// One card per PERSON (build/no-n8n/43, 2026-11-09). Before, the API sent one entry per campaign row, so a person
+// in three campaigns showed up three times (Instantly labels the lead in every campaign of the workspace at once).
+// Now each entry carries every campaign the person was in; an older payload without `campaigns` falls back to the
+// single campaign_display, so this page works before and after the SQL goes live.
+const campsOf = l => (Array.isArray(l.campaigns) && l.campaigns.length)
+  ? l.campaigns : [{ name: l.campaign_display, channel: l.channel }];
+
 // Search by person, e-mail, company or campaign (accents and case ignored), on top of the date filter.
 const fold = t => String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 function leads(){
   const q = fold(($("leadq") || {}).value || "").trim();
   const rows = (D.leads || []).filter(l => l.event_at && inRange(String(l.event_at).slice(0,10)))
-    .filter(l => !q || fold([l.full_name, l.email, l.company_name, l.company_domain, l.campaign_display, l.linkedin_url].join(" ")).includes(q));
+    .filter(l => !q || fold([l.full_name, l.email, l.company_name, l.company_domain, l.linkedin_url]
+                            .concat(campsOf(l).map(c => c.name)).join(" ")).includes(q));
   if (!rows.length){ $("leads").innerHTML = '<p class="empty">' + (q ? L.noMatch : L.emptyLeads) + '</p>'; return; }
 
   const rest = Math.max(rows.length - PAGE, 0);
@@ -713,6 +721,8 @@ function leads(){
       : '<span class="tag ' + (STCLASS[st] || "") + '">' + (L.st[st] || st) + '</span>';
     const firmo = [l.industry, l.headcount ? BR(l.headcount) + " " + L.employees : null].filter(Boolean).join(" · ");
     const who = [l.title, l.company_name].filter(Boolean).join(" · ");
+    const cs = campsOf(l);
+    const chans = [...new Set(cs.map(c => c.channel).filter(Boolean))];
     return '<article class="lead"><div class="ltop"><div>' +
       '<div class="lname">' + esc(l.full_name) + '</div>' +
       '<div class="lmeta">' + esc(who) + '</div>' +
@@ -721,8 +731,8 @@ function leads(){
       '</div></div>' +
       conversation(l.last_reply_text) +
       '<div class="lfoot">' + control +
-      '<span class="tag">' + (l.channel === "linkedin" ? "LinkedIn" : L.ch_email) + '</span>' +
-      '<span class="tag">' + esc(l.campaign_display) + '</span>' +
+      chans.map(ch => '<span class="tag">' + (ch === "linkedin" ? "LinkedIn" : L.ch_email) + '</span>').join("") +
+      cs.map(c => '<span class="tag">' + esc(c.name) + '</span>').join("") +
       '<span class="tag">' + new Date(l.event_at).toLocaleDateString(L.locale) + '</span>' +
       '</div></article>';
   }).join("") +
@@ -771,14 +781,17 @@ function leads(){
         const lead = D.leads.find(x => x.outreach_id === s.dataset.id);
         if (lead){
           lead.status = stage;
-          // meetings are counted by CURRENT status, so keep the local tally in step
+          // meetings are counted by CURRENT status, so keep the local tally in step. Since 43 the server moves
+          // every campaign row of the person (listed in `changed`), and since 44 a person counts ONCE per channel,
+          // so the tally moves once per channel the card touched, from the card's previous status.
           const day = String(lead.event_at).slice(0,10);
+          const chans = Array.isArray(j.changed) ? [...new Set(j.changed.map(m => m.channel))] : [lead.channel];
           const delta = (stage === "meeting_booked" ? 1 : 0) - (prev === "meeting_booked" ? 1 : 0);
-          if (delta){
-            const hit = D.daily.find(x => x.e === "meeting_booked" && x.d === day && x.ch === lead.channel);
+          if (delta) chans.forEach(ch => {
+            const hit = D.daily.find(x => x.e === "meeting_booked" && x.d === day && x.ch === ch);
             if (hit) hit.n += delta;
-            else if (delta > 0) D.daily.push({ d: day, ch: lead.channel, e: "meeting_booked", n: 1 });
-          }
+            else if (delta > 0) D.daily.push({ d: day, ch, e: "meeting_booked", n: 1 });
+          });
         }
         render();
         toast(L.saved);
